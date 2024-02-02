@@ -1,7 +1,6 @@
 package br.com.cinemagazine.document
 
 import br.com.cinemagazine.constants.Gender
-import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
