@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  mongodb:
+    container_name: "mongodb"
+    image: mongo:7.0.5-jammy
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: cinemagazine
+    networks:
+      - cinemagazine
+networks:
+  cinemagazine: {}
