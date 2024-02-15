@@ -11,9 +11,11 @@ data class CreateUserRequestDTO(
     val firstName: String?,
     @field:NotBlank(message = "lastName field is required")
     val lastName: String?,
-    @field:NotBlank(message = "email field is required") @field:Email(message = "email is not valid")
+    @field:NotBlank(message = "email field is required")
+    @field:Email(message = "email is not valid")
     val email: String?,
-    @field:NotBlank(message = "password field is required") @field:Size(min = 6, message = "minimum size of the password field is 6")
+    @field:NotBlank(message = "password field is required")
+    @field:Size(min = 6, message = "minimum size of the password field is 6")
     val password: String?,
     @field:NotNull(message = "gender field is required")
     @field:ListValues(values = ["Masculine", "Feminine"], message = "gender field accept values: Masculine and Feminine")
