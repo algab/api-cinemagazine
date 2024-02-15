@@ -1,7 +1,6 @@
 package br.com.cinemagazine.validator
 
 import br.com.cinemagazine.annotation.ListValues
-import br.com.cinemagazine.constants.Gender
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 
