@@ -3,7 +3,6 @@ package br.com.cinemagazine.service.impl
 import br.com.cinemagazine.dto.user.UserDTO
 import br.com.cinemagazine.service.TokenService
 import io.jsonwebtoken.JwtBuilder
-import io.jsonwebtoken.JwtParserBuilder
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service

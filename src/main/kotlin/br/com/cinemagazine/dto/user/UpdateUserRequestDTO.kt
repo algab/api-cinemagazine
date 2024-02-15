@@ -1,7 +1,6 @@
 package br.com.cinemagazine.dto.user
 
 import br.com.cinemagazine.annotation.ListValues
-import br.com.cinemagazine.constants.Gender
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
