@@ -12,6 +12,7 @@ import br.com.cinemagazine.dto.user.UpdateUserRequestDTO
 import br.com.cinemagazine.dto.user.UserDTO
 import br.com.cinemagazine.exception.BusinessException
 import br.com.cinemagazine.repository.UserRepository
+import br.com.cinemagazine.service.TokenService
 import br.com.cinemagazine.service.UserService
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
@@ -24,6 +25,7 @@ import java.time.LocalDateTime
 @Service
 class UserServiceImpl(
     private val userRepository: UserRepository,
+    private val tokenService: TokenService,
     private val passwordEncoder: PasswordEncoder
 ): UserService {
 
@@ -40,7 +42,12 @@ class UserServiceImpl(
             logger.error("UserServiceImpl.login - Password not matching - Email: [{}]", data.email)
             throw BusinessException(NOT_FOUND, USER_NOT_FOUND)
         }
-        return LoginDTO("token")
+        val userLogged = UserDTO(user.get().id, user.get().firstName, user.get().lastName, user.get().email, user.get().gender)
+        return LoginDTO(
+            userLogged,
+            tokenService.generateAccessToken(userLogged),
+            tokenService.generateRefreshToken(userLogged)
+        )
     }
 
     override fun createUser(data: CreateUserRequestDTO): UserDTO {

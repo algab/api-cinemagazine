@@ -1,5 +1,9 @@
 package br.com.cinemagazine
 
+import io.jsonwebtoken.JwtBuilder
+import io.jsonwebtoken.JwtParser
+import io.jsonwebtoken.JwtParserBuilder
+import io.jsonwebtoken.Jwts
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
@@ -11,6 +15,11 @@ class ApiCineMagazineApplication {
 	@Bean
 	fun bCryptPasswordEncoder(): PasswordEncoder {
 		return BCryptPasswordEncoder()
+	}
+
+	@Bean
+	fun jwtBuilder(): JwtBuilder {
+		return Jwts.builder()
 	}
 }
 
