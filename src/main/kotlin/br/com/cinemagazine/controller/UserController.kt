@@ -27,7 +27,7 @@ class UserController(private val userService: UserService) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @PostMapping("/login")
-    fun login(@RequestBody @Valid body: LoginRequestDTO): ResponseEntity<LoginDTO> {
+    fun login(@Valid @RequestBody body: LoginRequestDTO): ResponseEntity<LoginDTO> {
         logger.info("UserController.login - Start - Input: email [{}]", body.email)
         val login = userService.login(body)
         logger.info("UserController.login - End - Input: email [{}]", body.email)
@@ -35,7 +35,7 @@ class UserController(private val userService: UserService) {
     }
 
     @PostMapping
-    fun createUser(@RequestBody @Valid body: CreateUserRequestDTO): ResponseEntity<UserDTO> {
+    fun createUser(@Valid @RequestBody body: CreateUserRequestDTO): ResponseEntity<UserDTO> {
         logger.info("UserController.createUser - Start - Input: name [{}], email: [{}]", "${body.firstName} ${body.lastName}", body.email)
         val user = userService.createUser(body)
         logger.info("UserController.createUser - End - Input: name [{}], email: [{}] - Output: [{}]", "${body.firstName} ${body.lastName}", body.email, user)
@@ -51,7 +51,7 @@ class UserController(private val userService: UserService) {
     }
 
     @PutMapping("/{id}")
-    fun updateUser(@PathVariable id: String, @RequestBody @Valid body: UpdateUserRequestDTO): ResponseEntity<UserDTO> {
+    fun updateUser(@PathVariable id: String, @Valid @RequestBody body: UpdateUserRequestDTO): ResponseEntity<UserDTO> {
         logger.info("UserController.updateUser - Start - Input: id [{}], body [{}]", id, body)
         val user = userService.updateUser(id, body)
         logger.info("UserController.updateUser - End - Input: id [{}], body [{}] - Output: [{}]", id, body, user)
@@ -59,7 +59,7 @@ class UserController(private val userService: UserService) {
     }
 
     @PutMapping("/{id}/password")
-    fun updatePassword(@PathVariable id: String, @RequestBody @Valid body: UpdatePasswordRequestDTO): ResponseEntity<UserDTO> {
+    fun updatePassword(@PathVariable id: String, @Valid @RequestBody body: UpdatePasswordRequestDTO): ResponseEntity<UserDTO> {
         logger.info("UserController.updatePassword - Start - Input: id [{}]", id)
         val user = userService.updatePassword(id, body)
         logger.info("UserController.updatePassword - End - Input: id [{}]", id)

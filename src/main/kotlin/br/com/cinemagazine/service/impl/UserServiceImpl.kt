@@ -2,6 +2,7 @@ package br.com.cinemagazine.service.impl
 
 import br.com.cinemagazine.constants.ApiMessage.EMAIL_ALREADY_EXISTS
 import br.com.cinemagazine.constants.ApiMessage.USER_NOT_FOUND
+import br.com.cinemagazine.constants.Gender
 import br.com.cinemagazine.document.UserDocument
 import br.com.cinemagazine.dto.user.CreateUserRequestDTO
 import br.com.cinemagazine.dto.user.LoginDTO
@@ -29,7 +30,7 @@ class UserServiceImpl(
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun login(data: LoginRequestDTO): LoginDTO {
-        val user = userRepository.findByEmail(data.email)
+        val user = userRepository.findByEmail(data.email!!)
         if (user.isEmpty) {
             logger.error("UserServiceImpl.login - {} - Email: [{}]", USER_NOT_FOUND.description, data.email)
             throw BusinessException(NOT_FOUND, USER_NOT_FOUND)
@@ -43,14 +44,14 @@ class UserServiceImpl(
     }
 
     override fun createUser(data: CreateUserRequestDTO): UserDTO {
-        validateEmail(data.email)
+        validateEmail(data.email!!)
         val user = UserDocument(
             ObjectId().toString(),
-            data.firstName,
-            data.lastName,
+            data.firstName!!,
+            data.lastName!!,
             data.email,
             passwordEncoder.encode(data.password),
-            data.gender,
+            Gender.valueOf(data.gender!!.uppercase()),
             LocalDateTime.now(),
             LocalDateTime.now()
         )
@@ -72,15 +73,15 @@ class UserServiceImpl(
             throw BusinessException(NOT_FOUND, USER_NOT_FOUND)
         }
         if (user.email != data.email) {
-            validateEmail(data.email)
+            validateEmail(data.email!!)
         }
         val userUpdated = UserDocument(
             user.id,
-            data.firstName,
-            data.lastName,
+            data.firstName!!,
+            data.lastName!!,
             data.email,
             user.password,
-            data.gender,
+            Gender.valueOf(data.gender!!.uppercase()),
             user.createdDate,
             LocalDateTime.now()
         )
