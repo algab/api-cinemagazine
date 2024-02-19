@@ -3,6 +3,7 @@ package br.com.cinemagazine.service.impl
 import br.com.cinemagazine.constants.ApiMessage.EMAIL_ALREADY_EXISTS
 import br.com.cinemagazine.constants.ApiMessage.USER_NOT_FOUND
 import br.com.cinemagazine.constants.Gender
+import br.com.cinemagazine.document.RefreshTokenDocument
 import br.com.cinemagazine.document.UserDocument
 import br.com.cinemagazine.dto.user.CreateUserRequestDTO
 import br.com.cinemagazine.dto.user.LoginDTO
@@ -11,6 +12,7 @@ import br.com.cinemagazine.dto.user.UpdatePasswordRequestDTO
 import br.com.cinemagazine.dto.user.UpdateUserRequestDTO
 import br.com.cinemagazine.dto.user.UserDTO
 import br.com.cinemagazine.exception.BusinessException
+import br.com.cinemagazine.repository.RefreshTokenRepository
 import br.com.cinemagazine.repository.UserRepository
 import br.com.cinemagazine.service.TokenService
 import br.com.cinemagazine.service.UserService
@@ -24,14 +26,15 @@ import java.time.LocalDateTime
 
 @Service
 class UserServiceImpl(
-    private val userRepository: UserRepository,
     private val tokenService: TokenService,
+    private val userRepository: UserRepository,
+    private val refreshTokenRepository: RefreshTokenRepository,
     private val passwordEncoder: PasswordEncoder
 ): UserService {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
-    override fun login(data: LoginRequestDTO): LoginDTO {
+    override fun login(data: LoginRequestDTO, agent: String): LoginDTO {
         val user = userRepository.findByEmail(data.email!!)
         if (user.isEmpty) {
             logger.error("UserServiceImpl.login - {} - Email: [{}]", USER_NOT_FOUND.description, data.email)
@@ -43,10 +46,11 @@ class UserServiceImpl(
             throw BusinessException(NOT_FOUND, USER_NOT_FOUND)
         }
         val userLogged = UserDTO(user.get().id, user.get().firstName, user.get().lastName, user.get().email, user.get().gender)
-        return LoginDTO(
-            tokenService.generateAccessToken(userLogged),
-            tokenService.generateRefreshToken(userLogged)
-        )
+        val accessToken = tokenService.generateAccessToken(userLogged)
+        val refreshToken = tokenService.generateRefreshToken(userLogged)
+        val refreshTokenDocument = RefreshTokenDocument(ObjectId().toString(), refreshToken, agent, LocalDateTime.now())
+        refreshTokenRepository.save(refreshTokenDocument)
+        return LoginDTO(accessToken, refreshToken)
     }
 
     override fun createUser(data: CreateUserRequestDTO): UserDTO {

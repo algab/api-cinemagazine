@@ -8,7 +8,7 @@ import br.com.cinemagazine.dto.user.UpdateUserRequestDTO
 import br.com.cinemagazine.dto.user.UserDTO
 
 interface UserService {
-    fun login(data: LoginRequestDTO): LoginDTO
+    fun login(data: LoginRequestDTO, agent: String): LoginDTO
     fun createUser(data: CreateUserRequestDTO): UserDTO
     fun getUser(id: String): UserDTO
     fun updateUser(id: String, data: UpdateUserRequestDTO): UserDTO

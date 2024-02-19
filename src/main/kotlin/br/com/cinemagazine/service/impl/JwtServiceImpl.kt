@@ -6,6 +6,7 @@ import br.com.cinemagazine.dto.token.RefreshTokenRequestDTO
 import br.com.cinemagazine.dto.token.TokenDTO
 import br.com.cinemagazine.dto.user.UserDTO
 import br.com.cinemagazine.exception.BusinessException
+import br.com.cinemagazine.repository.RefreshTokenRepository
 import br.com.cinemagazine.service.TokenService
 import io.jsonwebtoken.JwtBuilder
 import io.jsonwebtoken.JwtParserBuilder
@@ -21,6 +22,7 @@ import javax.crypto.SecretKey
 
 @Service
 class JwtServiceImpl(
+    private val refreshTokenRepository: RefreshTokenRepository,
     private val jwtBuilder: JwtBuilder,
     private val jwtParserBuilder: JwtParserBuilder,
     @Value("\${jwt.secret}") private val secret: String,
@@ -28,28 +30,42 @@ class JwtServiceImpl(
     @Value("\${jwt.expiration.refresh-token}") private val expRefreshToken: Long
 ): TokenService {
 
+    private val accessToken = "access-token"
+    private val refreshToken = "refresh-token"
+    private val jti = "jti"
+    private val firstName = "firstName"
+    private val lastName = "lastName"
+    private val email = "email"
+    private val gender = "gender"
+    private val typeToken = "type"
+
     override fun generateAccessToken(user: UserDTO): String {
-        return generateToken(user, "access-token", expAccessToken)
+        return generateToken(user, accessToken, expAccessToken)
     }
 
     override fun generateRefreshToken(user: UserDTO): String {
-        return generateToken(user, "refresh-token", expRefreshToken)
+        return generateToken(user, refreshToken, expRefreshToken)
     }
 
-    override fun validateRefreshToken(data: RefreshTokenRequestDTO): TokenDTO {
+    override fun validateRefreshToken(data: RefreshTokenRequestDTO, agent: String): TokenDTO {
         try {
-            val jwtParser = jwtParserBuilder.verifyWith(getSecretKey()).build()
-            val jws = jwtParser.parseSignedClaims(data.token)
-            if (jws.payload["type"].toString() != "refresh-token") {
+            val result = refreshTokenRepository.findByToken(data.token!!).orElseThrow {
                 throw BusinessException(UNAUTHORIZED, TOKEN_INVALID)
             }
-            val id = jws.payload["jti"].toString()
-            val firstName = jws.payload["firstName"].toString()
-            val lastName = jws.payload["lastName"].toString()
-            val email = jws.payload["email"].toString()
-            val gender = jws.payload["gender"].toString()
+            if (result.agent != agent) {
+                throw BusinessException(UNAUTHORIZED, TOKEN_INVALID)
+            }
+            val claims = jwtParserBuilder.verifyWith(getSecretKey()).build().parseSignedClaims(data.token)
+            if (claims.payload[typeToken].toString() != refreshToken) {
+                throw BusinessException(UNAUTHORIZED, TOKEN_INVALID)
+            }
+            val id = claims.payload[jti].toString()
+            val firstName = claims.payload[firstName].toString()
+            val lastName = claims.payload[lastName].toString()
+            val email = claims.payload[email].toString()
+            val gender = claims.payload[gender].toString()
             val user = UserDTO(id, firstName, lastName, email, Gender.valueOf(gender))
-            return TokenDTO(generateToken(user, "access-token", expAccessToken))
+            return TokenDTO(generateToken(user, accessToken, expAccessToken))
         } catch (exception: Exception) {
             throw BusinessException(UNAUTHORIZED, TOKEN_INVALID)
         }
@@ -59,11 +75,11 @@ class JwtServiceImpl(
         return jwtBuilder
             .id(user.id)
             .subject("${user.firstName} ${user.lastName}")
-            .claim("firstName", user.firstName)
-            .claim("lastName", user.lastName)
-            .claim("email", user.email)
-            .claim("gender", user.gender)
-            .claim("type", type)
+            .claim(firstName, user.firstName)
+            .claim(lastName, user.lastName)
+            .claim(email, user.email)
+            .claim(gender, user.gender)
+            .claim(typeToken, type)
             .issuedAt(Date())
             .expiration(Date.from(LocalDateTime.now().plusMinutes(minutes).atZone(ZoneId.systemDefault()).toInstant()))
             .signWith(getSecretKey())

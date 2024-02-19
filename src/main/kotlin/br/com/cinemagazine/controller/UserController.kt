@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -33,18 +34,24 @@ class UserController(
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @PostMapping("/login")
-    fun login(@Valid @RequestBody body: LoginRequestDTO): ResponseEntity<LoginDTO> {
-        logger.info("UserController.login - Start - Input: email [{}]", body.email)
-        val login = userService.login(body)
-        logger.info("UserController.login - End - Input: email [{}]", body.email)
+    fun login(
+        @Valid @RequestBody body: LoginRequestDTO,
+        @RequestHeader("user-agent") userAgent: String
+    ): ResponseEntity<LoginDTO> {
+        logger.info("UserController.login - Start - Input: email [{}], user-agent [{}]", body.email, userAgent)
+        val login = userService.login(body, userAgent)
+        logger.info("UserController.login - End - Input: email [{}], user-agent [{}]", body.email, userAgent)
         return ResponseEntity.ok(login)
     }
 
     @PostMapping("/refresh-token")
-    fun refreshToken(@Valid @RequestBody body: RefreshTokenRequestDTO): ResponseEntity<TokenDTO> {
-        logger.info("UserController.refreshToken - Start")
-        val token = tokenService.validateRefreshToken(body)
-        logger.info("UserController.refreshToken - End")
+    fun refreshToken(
+        @Valid @RequestBody body: RefreshTokenRequestDTO,
+        @RequestHeader("user-agent") userAgent: String
+    ): ResponseEntity<TokenDTO> {
+        logger.info("UserController.refreshToken - Start - Input: user-agent [{}]", userAgent)
+        val token = tokenService.validateRefreshToken(body, userAgent)
+        logger.info("UserController.refreshToken - End - Input: user-agent [{}]", userAgent)
         return ResponseEntity.ok(token)
     }
 
