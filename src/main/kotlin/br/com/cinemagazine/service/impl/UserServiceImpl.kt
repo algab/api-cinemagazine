@@ -44,7 +44,6 @@ class UserServiceImpl(
         }
         val userLogged = UserDTO(user.get().id, user.get().firstName, user.get().lastName, user.get().email, user.get().gender)
         return LoginDTO(
-            userLogged,
             tokenService.generateAccessToken(userLogged),
             tokenService.generateRefreshToken(userLogged)
         )

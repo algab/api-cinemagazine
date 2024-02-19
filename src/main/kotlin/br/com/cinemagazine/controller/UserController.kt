@@ -1,11 +1,14 @@
 package br.com.cinemagazine.controller
 
+import br.com.cinemagazine.dto.token.RefreshTokenRequestDTO
+import br.com.cinemagazine.dto.token.TokenDTO
 import br.com.cinemagazine.dto.user.CreateUserRequestDTO
 import br.com.cinemagazine.dto.user.LoginDTO
 import br.com.cinemagazine.dto.user.LoginRequestDTO
 import br.com.cinemagazine.dto.user.UpdatePasswordRequestDTO
 import br.com.cinemagazine.dto.user.UpdateUserRequestDTO
 import br.com.cinemagazine.dto.user.UserDTO
+import br.com.cinemagazine.service.TokenService
 import br.com.cinemagazine.service.UserService
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
@@ -22,7 +25,10 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/v1/users")
-class UserController(private val userService: UserService) {
+class UserController(
+    private val userService: UserService,
+    private val tokenService: TokenService
+) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -32,6 +38,14 @@ class UserController(private val userService: UserService) {
         val login = userService.login(body)
         logger.info("UserController.login - End - Input: email [{}]", body.email)
         return ResponseEntity.ok(login)
+    }
+
+    @PostMapping("/refresh-token")
+    fun refreshToken(@Valid @RequestBody body: RefreshTokenRequestDTO): ResponseEntity<TokenDTO> {
+        logger.info("UserController.refreshToken - Start")
+        val token = tokenService.validateRefreshToken(body)
+        logger.info("UserController.refreshToken - End")
+        return ResponseEntity.ok(token)
     }
 
     @PostMapping

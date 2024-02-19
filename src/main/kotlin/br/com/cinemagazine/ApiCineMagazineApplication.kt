@@ -1,6 +1,7 @@
 package br.com.cinemagazine
 
 import io.jsonwebtoken.JwtBuilder
+import io.jsonwebtoken.JwtParserBuilder
 import io.jsonwebtoken.Jwts
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -18,6 +19,11 @@ class ApiCineMagazineApplication {
 	@Bean
 	fun jwtBuilder(): JwtBuilder {
 		return Jwts.builder()
+	}
+
+	@Bean
+	fun jwtParserBuilder(): JwtParserBuilder {
+		return Jwts.parser()
 	}
 }
 

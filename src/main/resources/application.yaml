@@ -20,7 +20,7 @@ jwt:
   secret: ${JWT_SECRET:aMH%Q#LHJL@oCWZko@x)+cYk,r:}kHz@T6rlj4st&UA(rZS:B**.KFY|yW[Aer@zOUBz?uJ5*JnZi7Xk}
   expiration:
     access-token: 5
-    refresh-token: 7200
+    refresh-token: 1440
 
 management:
   endpoints:
