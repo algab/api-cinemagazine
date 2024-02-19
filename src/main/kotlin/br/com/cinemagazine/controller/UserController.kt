@@ -38,9 +38,11 @@ class UserController(
         @Valid @RequestBody body: LoginRequestDTO,
         @RequestHeader("user-agent") userAgent: String
     ): ResponseEntity<LoginDTO> {
+        val begin = System.currentTimeMillis()
         logger.info("UserController.login - Start - Input: email [{}], user-agent [{}]", body.email, userAgent)
         val login = userService.login(body, userAgent)
-        logger.info("UserController.login - End - Input: email [{}], user-agent [{}]", body.email, userAgent)
+        logger.info("UserController.login - End - Input: email [{}], user-agent [{}] - Time: {} ms",
+            body.email, userAgent, System.currentTimeMillis() - begin)
         return ResponseEntity.ok(login)
     }
 
@@ -49,49 +51,62 @@ class UserController(
         @Valid @RequestBody body: RefreshTokenRequestDTO,
         @RequestHeader("user-agent") userAgent: String
     ): ResponseEntity<TokenDTO> {
+        val begin = System.currentTimeMillis()
         logger.info("UserController.refreshToken - Start - Input: user-agent [{}]", userAgent)
         val token = tokenService.validateRefreshToken(body, userAgent)
-        logger.info("UserController.refreshToken - End - Input: user-agent [{}]", userAgent)
+        logger.info("UserController.refreshToken - End - Input: user-agent [{}] - Time: {} ms",
+            userAgent, System.currentTimeMillis() - begin)
         return ResponseEntity.ok(token)
     }
 
     @PostMapping
     fun createUser(@Valid @RequestBody body: CreateUserRequestDTO): ResponseEntity<UserDTO> {
-        logger.info("UserController.createUser - Start - Input: name [{}], email: [{}]", "${body.firstName} ${body.lastName}", body.email)
+        val begin = System.currentTimeMillis()
+        logger.info("UserController.createUser - Start - Input: name [{}], email: [{}]",
+            "${body.firstName} ${body.lastName}", body.email)
         val user = userService.createUser(body)
-        logger.info("UserController.createUser - End - Input: name [{}], email: [{}] - Output: [{}]", "${body.firstName} ${body.lastName}", body.email, user)
+        logger.info("UserController.createUser - End - Input: name [{}], email: [{}] - Output: [{}] - Time: {} ms",
+            "${body.firstName} ${body.lastName}", body.email, user, System.currentTimeMillis() - begin)
         return ResponseEntity.status(CREATED).body(user)
     }
 
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: String): ResponseEntity<UserDTO> {
+        val begin = System.currentTimeMillis()
         logger.debug("UserController.getUser - Start - Input: id [{}]", id)
         val user = userService.getUser(id)
-        logger.debug("UserController.getUser - End - Input: id [{}] - Output: [{}]", id, user)
+        logger.debug("UserController.getUser - End - Input: id [{}] - Output: [{}] - Time: {} ms",
+            id, user, System.currentTimeMillis() - begin)
         return ResponseEntity.ok(user)
     }
 
     @PutMapping("/{id}")
     fun updateUser(@PathVariable id: String, @Valid @RequestBody body: UpdateUserRequestDTO): ResponseEntity<UserDTO> {
+        val begin = System.currentTimeMillis()
         logger.info("UserController.updateUser - Start - Input: id [{}], body [{}]", id, body)
         val user = userService.updateUser(id, body)
-        logger.info("UserController.updateUser - End - Input: id [{}], body [{}] - Output: [{}]", id, body, user)
+        logger.info("UserController.updateUser - End - Input: id [{}], body [{}] - Output: [{}] - Time: {} ms",
+            id, body, user, System.currentTimeMillis() - begin)
         return ResponseEntity.ok(user)
     }
 
     @PutMapping("/{id}/password")
     fun updatePassword(@PathVariable id: String, @Valid @RequestBody body: UpdatePasswordRequestDTO): ResponseEntity<UserDTO> {
+        val begin = System.currentTimeMillis()
         logger.info("UserController.updatePassword - Start - Input: id [{}]", id)
         val user = userService.updatePassword(id, body)
-        logger.info("UserController.updatePassword - End - Input: id [{}]", id)
+        logger.info("UserController.updatePassword - End - Input: id [{}] - Time: {} ms",
+            id, System.currentTimeMillis() - begin)
         return ResponseEntity.ok(user)
     }
 
     @DeleteMapping("/{id}")
     fun deleteUser(@PathVariable id: String): ResponseEntity<Void> {
+        val begin = System.currentTimeMillis()
         logger.info("UserController.updateUser - Start - Input: id [{}]", id)
         userService.deleteUser(id)
-        logger.info("UserController.updateUser - End - Input: id [{}]", id)
+        logger.info("UserController.updateUser - End - Input: id [{}] - Time: {} ms",
+            id, System.currentTimeMillis() - begin)
         return ResponseEntity.noContent().build()
     }
 
