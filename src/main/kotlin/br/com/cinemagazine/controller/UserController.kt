@@ -101,7 +101,7 @@ class UserController(
     }
 
     @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable id: String): ResponseEntity<Void> {
+    fun deleteUser(@PathVariable id: String): ResponseEntity<Unit> {
         val begin = System.currentTimeMillis()
         logger.info("UserController.updateUser - Start - Input: id [{}]", id)
         userService.deleteUser(id)

@@ -55,12 +55,13 @@ class UserServiceImpl(
 
     override fun createUser(data: CreateUserRequestDTO): UserDTO {
         validateEmail(data.email!!)
+        val password = passwordEncoder.encode(data.password)
         val user = UserDocument(
             ObjectId().toString(),
             data.firstName!!,
             data.lastName!!,
             data.email,
-            passwordEncoder.encode(data.password),
+            password,
             Gender.valueOf(data.gender!!.uppercase()),
             LocalDateTime.now(),
             LocalDateTime.now()
