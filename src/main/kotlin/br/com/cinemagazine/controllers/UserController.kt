@@ -1,4 +1,4 @@
-package br.com.cinemagazine.controller
+package br.com.cinemagazine.controllers
 
 import br.com.cinemagazine.dto.token.RefreshTokenRequestDTO
 import br.com.cinemagazine.dto.token.TokenDTO
@@ -8,8 +8,8 @@ import br.com.cinemagazine.dto.user.LoginRequestDTO
 import br.com.cinemagazine.dto.user.UpdatePasswordRequestDTO
 import br.com.cinemagazine.dto.user.UpdateUserRequestDTO
 import br.com.cinemagazine.dto.user.UserDTO
-import br.com.cinemagazine.service.TokenService
-import br.com.cinemagazine.service.UserService
+import br.com.cinemagazine.services.TokenService
+import br.com.cinemagazine.services.UserService
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus.CREATED
@@ -36,7 +36,7 @@ class UserController(
     @PostMapping("/login")
     fun login(
         @Valid @RequestBody body: LoginRequestDTO,
-        @RequestHeader("user-agent") userAgent: String
+        @RequestHeader("user-agent", required = true) userAgent: String
     ): ResponseEntity<LoginDTO> {
         val begin = System.currentTimeMillis()
         logger.info("UserController.login - Start - Input: email [{}], user-agent [{}]", body.email, userAgent)
@@ -49,7 +49,7 @@ class UserController(
     @PostMapping("/refresh-token")
     fun refreshToken(
         @Valid @RequestBody body: RefreshTokenRequestDTO,
-        @RequestHeader("user-agent") userAgent: String
+        @RequestHeader("user-agent", required = true) userAgent: String
     ): ResponseEntity<TokenDTO> {
         val begin = System.currentTimeMillis()
         logger.info("UserController.refreshToken - Start - Input: user-agent [{}]", userAgent)

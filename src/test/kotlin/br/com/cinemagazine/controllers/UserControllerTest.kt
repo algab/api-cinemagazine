@@ -1,4 +1,4 @@
-package br.com.cinemagazine.controller
+package br.com.cinemagazine.controllers
 
 import br.com.cinemagazine.builder.token.getRefreshTokenRequestDTO
 import br.com.cinemagazine.builder.token.getTokenDTO
@@ -14,8 +14,8 @@ import br.com.cinemagazine.dto.user.CreateUserRequestDTO
 import br.com.cinemagazine.dto.user.LoginRequestDTO
 import br.com.cinemagazine.dto.user.UpdatePasswordRequestDTO
 import br.com.cinemagazine.dto.user.UpdateUserRequestDTO
-import br.com.cinemagazine.service.TokenService
-import br.com.cinemagazine.service.UserService
+import br.com.cinemagazine.services.TokenService
+import br.com.cinemagazine.services.UserService
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every

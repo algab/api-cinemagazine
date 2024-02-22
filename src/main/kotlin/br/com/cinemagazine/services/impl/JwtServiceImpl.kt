@@ -1,4 +1,4 @@
-package br.com.cinemagazine.service.impl
+package br.com.cinemagazine.services.impl
 
 import br.com.cinemagazine.constants.ApiMessage.TOKEN_INVALID
 import br.com.cinemagazine.constants.Gender
@@ -8,7 +8,7 @@ import br.com.cinemagazine.dto.user.UserDTO
 import br.com.cinemagazine.exception.BusinessException
 import br.com.cinemagazine.exception.TokenException
 import br.com.cinemagazine.repository.RefreshTokenRepository
-import br.com.cinemagazine.service.TokenService
+import br.com.cinemagazine.services.TokenService
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.JwtBuilder
 import io.jsonwebtoken.JwtParserBuilder

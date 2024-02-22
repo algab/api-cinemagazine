@@ -1,4 +1,4 @@
-package br.com.cinemagazine.service
+package br.com.cinemagazine.services
 
 import br.com.cinemagazine.builder.document.getRefreshTokenDocument
 import br.com.cinemagazine.builder.document.getUserDocument
@@ -9,14 +9,14 @@ import br.com.cinemagazine.builder.user.getUpdateUserRequestDTO
 import br.com.cinemagazine.constants.ApiMessage.EMAIL_ALREADY_EXISTS
 import br.com.cinemagazine.constants.ApiMessage.USER_NOT_FOUND
 import br.com.cinemagazine.constants.Gender
-import br.com.cinemagazine.document.RefreshTokenDocument
-import br.com.cinemagazine.document.UserDocument
+import br.com.cinemagazine.documents.RefreshTokenDocument
+import br.com.cinemagazine.documents.UserDocument
 import br.com.cinemagazine.dto.user.LoginRequestDTO
 import br.com.cinemagazine.dto.user.UserDTO
 import br.com.cinemagazine.exception.BusinessException
 import br.com.cinemagazine.repository.RefreshTokenRepository
 import br.com.cinemagazine.repository.UserRepository
-import br.com.cinemagazine.service.impl.UserServiceImpl
+import br.com.cinemagazine.services.impl.UserServiceImpl
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

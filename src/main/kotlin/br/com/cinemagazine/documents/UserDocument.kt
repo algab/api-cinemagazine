@@ -1,4 +1,4 @@
-package br.com.cinemagazine.document
+package br.com.cinemagazine.documents
 
 import br.com.cinemagazine.constants.Gender
 import org.springframework.data.annotation.Id

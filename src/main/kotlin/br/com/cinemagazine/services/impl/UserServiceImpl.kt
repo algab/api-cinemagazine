@@ -1,10 +1,10 @@
-package br.com.cinemagazine.service.impl
+package br.com.cinemagazine.services.impl
 
 import br.com.cinemagazine.constants.ApiMessage.EMAIL_ALREADY_EXISTS
 import br.com.cinemagazine.constants.ApiMessage.USER_NOT_FOUND
 import br.com.cinemagazine.constants.Gender
-import br.com.cinemagazine.document.RefreshTokenDocument
-import br.com.cinemagazine.document.UserDocument
+import br.com.cinemagazine.documents.RefreshTokenDocument
+import br.com.cinemagazine.documents.UserDocument
 import br.com.cinemagazine.dto.user.CreateUserRequestDTO
 import br.com.cinemagazine.dto.user.LoginDTO
 import br.com.cinemagazine.dto.user.LoginRequestDTO
@@ -14,8 +14,8 @@ import br.com.cinemagazine.dto.user.UserDTO
 import br.com.cinemagazine.exception.BusinessException
 import br.com.cinemagazine.repository.RefreshTokenRepository
 import br.com.cinemagazine.repository.UserRepository
-import br.com.cinemagazine.service.TokenService
-import br.com.cinemagazine.service.UserService
+import br.com.cinemagazine.services.TokenService
+import br.com.cinemagazine.services.UserService
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus.CONFLICT

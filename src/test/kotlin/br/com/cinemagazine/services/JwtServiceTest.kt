@@ -1,4 +1,4 @@
-package br.com.cinemagazine.service
+package br.com.cinemagazine.services
 
 import br.com.cinemagazine.builder.document.getRefreshTokenDocument
 import br.com.cinemagazine.builder.user.getUserDTO
@@ -6,7 +6,7 @@ import br.com.cinemagazine.constants.ApiMessage.TOKEN_INVALID
 import br.com.cinemagazine.dto.token.RefreshTokenRequestDTO
 import br.com.cinemagazine.exception.BusinessException
 import br.com.cinemagazine.repository.RefreshTokenRepository
-import br.com.cinemagazine.service.impl.JwtServiceImpl
+import br.com.cinemagazine.services.impl.JwtServiceImpl
 import io.jsonwebtoken.JwtBuilder
 import io.jsonwebtoken.JwtParserBuilder
 import io.jsonwebtoken.impl.DefaultClaims

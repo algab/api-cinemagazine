@@ -1,6 +1,6 @@
 package br.com.cinemagazine.repository
 
-import br.com.cinemagazine.document.UserDocument
+import br.com.cinemagazine.documents.UserDocument
 import org.springframework.data.mongodb.repository.MongoRepository
 import java.util.*
 

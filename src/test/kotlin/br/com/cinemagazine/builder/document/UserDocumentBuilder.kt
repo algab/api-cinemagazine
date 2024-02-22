@@ -1,7 +1,7 @@
 package br.com.cinemagazine.builder.document
 
 import br.com.cinemagazine.constants.Gender
-import br.com.cinemagazine.document.UserDocument
+import br.com.cinemagazine.documents.UserDocument
 import java.time.LocalDateTime
 
 fun getUserDocument(): UserDocument {

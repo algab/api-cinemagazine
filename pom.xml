@@ -22,7 +22,7 @@
 		<kotest-junit5.version>5.8.0</kotest-junit5.version>
 		<kotest-spring.version>1.1.3</kotest-spring.version>
 		<mockk-jvm.version>1.13.9</mockk-jvm.version>
-		<jacoco-maven-plugin.version>0.8.11 </jacoco-maven-plugin.version>
+		<jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -159,6 +159,14 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<excludes>
+						<exclude>**/constants/**</exclude>
+						<exclude>**/dto/**</exclude>
+						<exclude>**/documents/**</exclude>
+						<exclude>**/ApiCineMagazineApplication.kt</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

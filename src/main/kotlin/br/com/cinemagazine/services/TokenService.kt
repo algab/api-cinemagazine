@@ -1,4 +1,4 @@
-package br.com.cinemagazine.service
+package br.com.cinemagazine.services
 
 import br.com.cinemagazine.dto.token.RefreshTokenRequestDTO
 import br.com.cinemagazine.dto.token.TokenDTO
