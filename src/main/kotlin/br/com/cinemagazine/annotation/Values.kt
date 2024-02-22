@@ -1,6 +1,6 @@
 package br.com.cinemagazine.annotation
 
-import br.com.cinemagazine.validator.ListValuesValidator
+import br.com.cinemagazine.validator.ValuesValidator
 import jakarta.validation.Constraint
 import jakarta.validation.Payload
 import kotlin.annotation.AnnotationRetention.RUNTIME
@@ -9,8 +9,8 @@ import kotlin.reflect.KClass
 
 @Target(FIELD)
 @Retention(RUNTIME)
-@Constraint(validatedBy = [ListValuesValidator::class])
-annotation class ListValues(
+@Constraint(validatedBy = [ValuesValidator::class])
+annotation class Values(
     val message: String = "",
     val values: Array<String> = [],
     val groups: Array<KClass<Any>> = [],

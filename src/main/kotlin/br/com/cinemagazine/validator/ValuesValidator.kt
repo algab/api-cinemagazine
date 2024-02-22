@@ -1,15 +1,15 @@
 package br.com.cinemagazine.validator
 
-import br.com.cinemagazine.annotation.ListValues
+import br.com.cinemagazine.annotation.Values
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 
-class ListValuesValidator: ConstraintValidator<ListValues, String> {
+class ValuesValidator: ConstraintValidator<Values, String> {
 
     private var values: List<String> = mutableListOf()
 
-    override fun initialize(constraintAnnotation: ListValues?) {
-        constraintAnnotation?.values?.forEach { values.addLast(it) }
+    override fun initialize(annotation: Values?) {
+        annotation?.values?.forEach { values.addLast(it) }
     }
 
     override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean {
