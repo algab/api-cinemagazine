@@ -1,12 +1,18 @@
 package br.com.cinemagazine.service
 
-import br.com.cinemagazine.constants.ApiMessage
+import br.com.cinemagazine.builder.document.getRefreshTokenDocument
+import br.com.cinemagazine.builder.document.getUserDocument
+import br.com.cinemagazine.builder.user.getCreateUserRequestDTO
+import br.com.cinemagazine.builder.user.getLoginRequestDTO
+import br.com.cinemagazine.builder.user.getUpdatePasswordRequestDTO
+import br.com.cinemagazine.builder.user.getUpdateUserRequestDTO
+import br.com.cinemagazine.constants.ApiMessage.EMAIL_ALREADY_EXISTS
+import br.com.cinemagazine.constants.ApiMessage.USER_NOT_FOUND
 import br.com.cinemagazine.constants.Gender
 import br.com.cinemagazine.document.RefreshTokenDocument
 import br.com.cinemagazine.document.UserDocument
-import br.com.cinemagazine.dto.user.CreateUserRequestDTO
 import br.com.cinemagazine.dto.user.LoginRequestDTO
-import br.com.cinemagazine.dto.user.UpdateUserRequestDTO
+import br.com.cinemagazine.dto.user.UserDTO
 import br.com.cinemagazine.exception.BusinessException
 import br.com.cinemagazine.repository.RefreshTokenRepository
 import br.com.cinemagazine.repository.UserRepository
@@ -19,8 +25,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.security.crypto.password.PasswordEncoder
-import java.time.LocalDateTime
-import java.util.*
+import java.util.Optional
 
 class UserServiceTest: FunSpec({
 
@@ -31,112 +36,167 @@ class UserServiceTest: FunSpec({
     val userService = UserServiceImpl(tokenService, userRepository, refreshTokenRepository, passwordEncoder)
 
     test("should execute login with successful") {
-        val userDocument = UserDocument("1", "Test", "Test", "test@email.com", "1234", Gender.MASCULINE, LocalDateTime.now(), LocalDateTime.now())
-        every { userRepository.findByEmail(any()) } returns Optional.of(userDocument)
+        every { userRepository.findByEmail(any(String::class)) } returns Optional.of(getUserDocument())
         every { passwordEncoder.matches(any(), any()) } returns true
-        every { tokenService.generateAccessToken(any()) } returns "access-token"
-        every { tokenService.generateRefreshToken(any()) } returns "refresh-token"
-        every { refreshTokenRepository.save(any()) } returns RefreshTokenDocument("1", "refresh-token", "agent", LocalDateTime.now())
+        every { tokenService.generateAccessToken(any(UserDTO::class)) } returns "access-token"
+        every { tokenService.generateRefreshToken(any(UserDTO::class)) } returns "refresh-token"
+        every { refreshTokenRepository.save(any(RefreshTokenDocument::class)) } returns getRefreshTokenDocument()
 
-        val result = userService.login(LoginRequestDTO("alvaro@email.com", "123456"), "user-agent")
+        val result = userService.login(getLoginRequestDTO(), "user-agent")
 
         result.accessToken.shouldBe("access-token")
         result.refreshToken.shouldBe("refresh-token")
     }
 
-    test("should execute login return email not found") {
-        every { userRepository.findByEmail(any()) } returns Optional.empty()
+    test("when the email does not exist should return error") {
+        every { userRepository.findByEmail(any(String::class)) } returns Optional.empty()
 
         val exception = shouldThrow<BusinessException> {
-            userService.login(LoginRequestDTO("alvaro@email.com", "123456"), "user-agent")
+            userService.login(getLoginRequestDTO(), "user-agent")
         }
-        exception.message.shouldBe(ApiMessage.USER_NOT_FOUND.description)
+        exception.message.shouldBe(USER_NOT_FOUND.description)
     }
 
-    test("should execute login return password not matches") {
-        val userDocument = UserDocument("1", "Test", "Test", "test@email.com", "1234", Gender.MASCULINE, LocalDateTime.now(), LocalDateTime.now())
-        every { userRepository.findByEmail(any()) } returns Optional.of(userDocument)
+    test("when the password is wrong should return an error") {
+        every { userRepository.findByEmail(any(String::class)) } returns Optional.of(getUserDocument())
         every { passwordEncoder.matches(any(), any()) } returns false
 
         val exception = shouldThrow<BusinessException> {
             userService.login(LoginRequestDTO("alvaro@email.com", "123456"), "user-agent")
         }
-        exception.message.shouldBe(ApiMessage.USER_NOT_FOUND.description)
+        exception.message.shouldBe(USER_NOT_FOUND.description)
     }
 
     test("should create user with successful") {
-        val userDocument = UserDocument("1", "Test", "Test", "test@email.com", "1234", Gender.MASCULINE, LocalDateTime.now(), LocalDateTime.now())
-        every { userRepository.existsByEmail(any()) } returns false
-        every { passwordEncoder.encode(any()) } returns "1234"
+        val userDocument = getUserDocument()
+        every { userRepository.existsByEmail(any(String::class)) } returns false
+        every { passwordEncoder.encode(any(String::class)) } returns "1234"
         every { userRepository.save(any()) } returns userDocument
 
-        val result = userService.createUser(CreateUserRequestDTO("Test", "Test", "test@email.com", "123456", "Masculine"))
+        val result = userService.createUser(getCreateUserRequestDTO())
 
-        result.firstName.shouldBe("Test")
+        result.id.shouldBe(userDocument.id)
+        result.firstName.shouldBe(userDocument.firstName)
+        result.lastName.shouldBe(userDocument.lastName)
+        result.email.shouldBe(userDocument.email)
+        result.gender.shouldBe(userDocument.gender)
     }
 
-    test("should create user return email invalid") {
-        every { userRepository.existsByEmail(any()) } returns true
+    test("when an email already exists should return an error") {
+        every { userRepository.existsByEmail(any(String::class)) } returns true
 
         val exception = shouldThrow<BusinessException> {
-            userService.createUser(CreateUserRequestDTO("Test", "Test", "test@email.com", "123456", "Masculine"))
+            userService.createUser(getCreateUserRequestDTO())
         }
+        exception.message.shouldBe(EMAIL_ALREADY_EXISTS.description)
         verify { userRepository.save(any()) wasNot Called }
-        exception.message.shouldBe(ApiMessage.EMAIL_ALREADY_EXISTS.description)
     }
 
     test("should get user with successful") {
-        val userDocument = UserDocument("1", "Test", "Test", "test@email.com", "1234", Gender.MASCULINE, LocalDateTime.now(), LocalDateTime.now())
-        every { userRepository.findById(any()) } returns Optional.of(userDocument)
+        val userDocument = getUserDocument()
+        every { userRepository.findById(any(String::class)) } returns Optional.of(userDocument)
 
         val result = userService.getUser("1")
 
+        result.id.shouldBe(userDocument.id)
         result.firstName.shouldBe(userDocument.firstName)
         result.lastName.shouldBe(userDocument.lastName)
+        result.email.shouldBe(userDocument.email)
+        result.gender.shouldBe(userDocument.gender)
     }
 
-    test("should get user return error") {
-        every { userRepository.findById(any()) } returns Optional.empty()
+    test("when the user id does not exist should return error in getUser") {
+        every { userRepository.findById(any(String::class)) } returns Optional.empty()
 
         val exception = shouldThrow<BusinessException> {
             userService.getUser("1")
         }
-        exception.message.shouldBe(ApiMessage.USER_NOT_FOUND.description)
+        exception.message.shouldBe(USER_NOT_FOUND.description)
     }
 
     test("should update user with successful") {
-        val userDocument = UserDocument("1", "Test", "Test", "test@email.com", "1234", Gender.MASCULINE, LocalDateTime.now(), LocalDateTime.now())
+        val userDocument = getUserDocument()
         val userUpdated = userDocument.copy()
+        userUpdated.firstName = "User"
         userUpdated.gender = Gender.FEMININE
-        every { userRepository.findById(any()) } returns Optional.of(userDocument)
-        every { userRepository.save(any()) } returns userUpdated
+        every { userRepository.findById(any(String::class)) } returns Optional.of(userDocument)
+        every { userRepository.save(any(UserDocument::class)) } returns userUpdated
 
-        val result = userService.updateUser("1", UpdateUserRequestDTO("Test", "test", "test@email.com", "Feminine"))
+        val result = userService.updateUser("1", getUpdateUserRequestDTO())
 
-        result.gender.shouldBe(Gender.FEMININE)
+        result.id.shouldBe(userUpdated.id)
+        result.firstName.shouldBe(userUpdated.firstName)
+        result.lastName.shouldBe(userUpdated.lastName)
+        result.email.shouldBe(userUpdated.email)
+        result.gender.shouldBe(userUpdated.gender)
     }
 
     test("should update user with successful with different email") {
-        val userDocument = UserDocument("1", "Test", "Test", "test@email.com", "1234", Gender.MASCULINE, LocalDateTime.now(), LocalDateTime.now())
+        val userDocument = getUserDocument()
         val userUpdated = userDocument.copy()
         userUpdated.email = "test10@email.com"
         userUpdated.gender = Gender.FEMININE
-        every { userRepository.findById(any()) } returns Optional.of(userDocument)
-        every { userRepository.existsByEmail(any()) } returns false
-        every { userRepository.save(any()) } returns userUpdated
+        every { userRepository.findById(any(String::class)) } returns Optional.of(userDocument)
+        every { userRepository.existsByEmail(any(String::class)) } returns false
+        every { userRepository.save(any(UserDocument::class)) } returns userUpdated
 
-        val result = userService.updateUser("1", UpdateUserRequestDTO("Test", "test", "test10@email.com", "Feminine"))
+        val result = userService.updateUser("1", getUpdateUserRequestDTO())
 
-        result.email.shouldBe("test10@email.com")
-        result.gender.shouldBe(Gender.FEMININE)
+        result.id.shouldBe(userUpdated.id)
+        result.firstName.shouldBe(userUpdated.firstName)
+        result.lastName.shouldBe(userUpdated.lastName)
+        result.email.shouldBe(userUpdated.email)
+        result.gender.shouldBe(userUpdated.gender)
     }
 
-    test("should update user return error") {
-        every { userRepository.findById(any()) } returns Optional.empty()
+    test("when the user id does not exist should return error in updateUser") {
+        every { userRepository.findById(any(String::class)) } returns Optional.empty()
 
         val exception = shouldThrow<BusinessException> {
-            userService.updateUser("1", UpdateUserRequestDTO("Test", "test", "test10@email.com", "Feminine"))
+            userService.updateUser("1", getUpdateUserRequestDTO())
         }
-        exception.message.shouldBe(ApiMessage.USER_NOT_FOUND.description)
+        exception.message.shouldBe(USER_NOT_FOUND.description)
+    }
+
+    test("should update password with successful") {
+        val userDocument = getUserDocument()
+        every { userRepository.findById(any(String::class)) } returns Optional.of(userDocument)
+        every { passwordEncoder.encode(any(String::class)) } returns "1234"
+        every { userRepository.save(any(UserDocument::class)) } returns userDocument
+
+        val result = userService.updatePassword("1", getUpdatePasswordRequestDTO())
+
+        result.id.shouldBe(userDocument.id)
+        result.firstName.shouldBe(userDocument.firstName)
+        result.lastName.shouldBe(userDocument.lastName)
+        result.email.shouldBe(userDocument.email)
+        result.gender.shouldBe(userDocument.gender)
+    }
+
+    test("when the user id does not exist should return error in updatePassword") {
+        every { userRepository.findById(any(String::class)) } returns Optional.empty()
+
+        val exception = shouldThrow<BusinessException> {
+            userService.updatePassword("1", getUpdatePasswordRequestDTO())
+        }
+        exception.message.shouldBe(USER_NOT_FOUND.description)
+    }
+
+    test("should delete user with successful") {
+        every { userRepository.findById(any(String::class)) } returns Optional.of(getUserDocument())
+        every { userRepository.delete(any(UserDocument::class)) } returns Unit
+
+        userService.deleteUser("1")
+
+        verify(exactly = 1) { userRepository.delete(any(UserDocument::class)) }
+    }
+
+    test("when the user id does not exist should return error in deleteUser") {
+        every { userRepository.findById(any(String::class)) } returns Optional.empty()
+
+        val exception = shouldThrow<BusinessException> {
+            userService.deleteUser("1")
+        }
+        exception.message.shouldBe(USER_NOT_FOUND.description)
     }
 })

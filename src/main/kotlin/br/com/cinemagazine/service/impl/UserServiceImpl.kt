@@ -86,7 +86,7 @@ class UserServiceImpl(
         if (user.email != data.email) {
             validateEmail(data.email!!)
         }
-        val userUpdated = UserDocument(
+        val userUpdated = userRepository.save(UserDocument(
             user.id,
             data.firstName!!,
             data.lastName!!,
@@ -95,8 +95,7 @@ class UserServiceImpl(
             Gender.valueOf(data.gender!!.uppercase()),
             user.createdDate,
             LocalDateTime.now()
-        )
-        userRepository.save(userUpdated)
+        ))
         return UserDTO(userUpdated.id, userUpdated.firstName, userUpdated.lastName, userUpdated.email, userUpdated.gender)
     }
 
@@ -105,12 +104,13 @@ class UserServiceImpl(
             logger.error("UserServiceImpl.updatePassword - {} - id: [{}]", USER_NOT_FOUND.description, id)
             throw BusinessException(NOT_FOUND, USER_NOT_FOUND)
         }
+        val password = passwordEncoder.encode(data.password)
         val userUpdated = UserDocument(
             user.id,
             user.firstName,
             user.lastName,
             user.email,
-            passwordEncoder.encode(data.password),
+            password,
             user.gender,
             user.createdDate,
             LocalDateTime.now()

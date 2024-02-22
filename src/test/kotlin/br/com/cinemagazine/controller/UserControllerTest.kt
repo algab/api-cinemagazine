@@ -1,14 +1,19 @@
 package br.com.cinemagazine.controller
 
+import br.com.cinemagazine.builder.token.getRefreshTokenRequestDTO
+import br.com.cinemagazine.builder.token.getTokenDTO
+import br.com.cinemagazine.builder.user.getCreateUserRequestDTO
+import br.com.cinemagazine.builder.user.getLoginDTO
+import br.com.cinemagazine.builder.user.getLoginRequestDTO
+import br.com.cinemagazine.builder.user.getUpdatePasswordRequestDTO
+import br.com.cinemagazine.builder.user.getUpdateUserRequestDTO
+import br.com.cinemagazine.builder.user.getUserDTO
 import br.com.cinemagazine.constants.Gender
 import br.com.cinemagazine.dto.token.RefreshTokenRequestDTO
-import br.com.cinemagazine.dto.token.TokenDTO
 import br.com.cinemagazine.dto.user.CreateUserRequestDTO
-import br.com.cinemagazine.dto.user.LoginDTO
 import br.com.cinemagazine.dto.user.LoginRequestDTO
 import br.com.cinemagazine.dto.user.UpdatePasswordRequestDTO
 import br.com.cinemagazine.dto.user.UpdateUserRequestDTO
-import br.com.cinemagazine.dto.user.UserDTO
 import br.com.cinemagazine.service.TokenService
 import br.com.cinemagazine.service.UserService
 import io.kotest.core.spec.style.FunSpec
@@ -24,61 +29,76 @@ class UserControllerTest: FunSpec({
     val userController = UserController(userService, tokenService)
 
     test("should execute login with successful") {
-        every { userService.login( any(), any()) } returns LoginDTO("access-token", "refresh-token")
+        every { userService.login(any(LoginRequestDTO::class), any(String::class)) } returns getLoginDTO()
 
-        val result = userController.login(LoginRequestDTO("alvaro@email.com", "123456"), "user-agent")
+        val result = userController.login(getLoginRequestDTO(), "user-agent")
 
         result.statusCode.shouldBe(HttpStatus.OK)
-        result.body?.accessToken.shouldBe("access-token")
-        result.body?.refreshToken.shouldBe("refresh-token")
+        result.body?.accessToken.shouldBe(getLoginDTO().accessToken)
+        result.body?.refreshToken.shouldBe(getLoginDTO().refreshToken)
     }
 
     test("should execute refresh-token with successful") {
-        every { tokenService.validateRefreshToken(any(), any()) } returns TokenDTO("new-token")
+        every { tokenService.validateRefreshToken(any(RefreshTokenRequestDTO::class), any(String::class)) } returns getTokenDTO()
 
-        val result = userController.refreshToken(RefreshTokenRequestDTO("refresh-token"), "user-agent")
+        val result = userController.refreshToken(getRefreshTokenRequestDTO(), "user-agent")
 
         result.statusCode.shouldBe(HttpStatus.OK)
-        result.body?.token.shouldBe("new-token")
+        result.body?.token.shouldBe(getTokenDTO().token)
     }
 
     test("should create user with successful") {
-        every { userService.createUser(any()) } returns UserDTO("1", "Test", "Test", "test@email.com", Gender.MASCULINE)
+        val user = getUserDTO()
+        every { userService.createUser(any(CreateUserRequestDTO::class)) } returns user
 
-        val result = userController.createUser(CreateUserRequestDTO("Test", "Test", "test@email.com", "123456", "Masculine"))
+        val result = userController.createUser(getCreateUserRequestDTO())
 
         result.statusCode.shouldBe(HttpStatus.CREATED)
-        result.body?.firstName.shouldBe("Test")
+        result.body?.id.shouldBe(user.id)
+        result.body?.firstName.shouldBe(user.firstName)
+        result.body?.lastName.shouldBe(user.lastName)
+        result.body?.email.shouldBe(user.email)
+        result.body?.gender.shouldBe(user.gender)
     }
 
     test("should get user with successful") {
-        every { userService.getUser(any()) } returns UserDTO("1", "Test", "Test", "test@email.com", Gender.MASCULINE)
+        val user = getUserDTO()
+        every { userService.getUser(any(String::class)) } returns user
 
         val result = userController.getUser("1")
 
         result.statusCode.shouldBe(HttpStatus.OK)
-        result.body?.firstName.shouldBe("Test")
+        result.body?.id.shouldBe(user.id)
+        result.body?.firstName.shouldBe(user.firstName)
+        result.body?.lastName.shouldBe(user.lastName)
+        result.body?.email.shouldBe(user.email)
+        result.body?.gender.shouldBe(user.gender)
     }
 
     test("should update user with successful") {
-        every { userService.updateUser(any(), any()) } returns UserDTO("1", "Test", "Test", "test@email.com", Gender.FEMININE)
+        val user = getUserDTO(Gender.FEMININE)
+        every { userService.updateUser(any(String::class), any(UpdateUserRequestDTO::class)) } returns user
 
-        val result = userController.updateUser("1", UpdateUserRequestDTO("Test", "test", "test@email.com", "Feminine"))
+        val result = userController.updateUser("1", getUpdateUserRequestDTO())
 
         result.statusCode.shouldBe(HttpStatus.OK)
-        result.body?.gender.shouldBe(Gender.FEMININE)
+        result.body?.id.shouldBe(user.id)
+        result.body?.firstName.shouldBe(user.firstName)
+        result.body?.lastName.shouldBe(user.lastName)
+        result.body?.email.shouldBe(user.email)
+        result.body?.gender.shouldBe(user.gender)
     }
 
     test("should update password with successful") {
-        every { userService.updatePassword(any(), any()) } returns UserDTO("1", "Test", "Test", "test@email.com", Gender.FEMININE)
+        every { userService.updatePassword(any(String::class), any(UpdatePasswordRequestDTO::class)) } returns getUserDTO(Gender.FEMININE)
 
-        val result = userController.updatePassword("1", UpdatePasswordRequestDTO("12345678"))
+        val result = userController.updatePassword("1", getUpdatePasswordRequestDTO())
 
         result.statusCode.shouldBe(HttpStatus.OK)
     }
 
     test("should delete user with successful") {
-        every { userService.deleteUser(any()) } returns Unit
+        every { userService.deleteUser(any(String::class)) } returns Unit
 
         val result = userController.deleteUser("1")
 
