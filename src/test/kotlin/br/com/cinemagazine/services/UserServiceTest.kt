@@ -140,7 +140,7 @@ class UserServiceTest: FunSpec({
         every { userRepository.existsByEmail(any(String::class)) } returns false
         every { userRepository.save(any(UserDocument::class)) } returns userUpdated
 
-        val result = userService.updateUser("1", getUpdateUserRequestDTO())
+        val result = userService.updateUser("1", getUpdateUserRequestDTO("test10@email.com"))
 
         result.id.shouldBe(userUpdated.id)
         result.firstName.shouldBe(userUpdated.firstName)

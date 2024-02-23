@@ -1,9 +1,9 @@
 package br.com.cinemagazine.services
 
 import br.com.cinemagazine.builder.document.getRefreshTokenDocument
+import br.com.cinemagazine.builder.token.getRefreshTokenRequestDTO
 import br.com.cinemagazine.builder.user.getUserDTO
 import br.com.cinemagazine.constants.ApiMessage.TOKEN_INVALID
-import br.com.cinemagazine.dto.token.RefreshTokenRequestDTO
 import br.com.cinemagazine.exception.BusinessException
 import br.com.cinemagazine.repository.RefreshTokenRepository
 import br.com.cinemagazine.services.impl.JwtServiceImpl
@@ -77,7 +77,7 @@ class JwtServiceTest: FunSpec({
         every { refreshTokenRepository.findByToken(any(String::class)) } returns Optional.empty()
 
         val exception = shouldThrow<BusinessException> {
-            service.validateRefreshToken(RefreshTokenRequestDTO("refresh-token"), "agent")
+            service.validateRefreshToken(getRefreshTokenRequestDTO(), "agent")
         }
         exception.message.shouldBe(TOKEN_INVALID.description)
     }
@@ -86,7 +86,7 @@ class JwtServiceTest: FunSpec({
         every { refreshTokenRepository.findByToken(any(String::class)) } returns Optional.of(getRefreshTokenDocument())
 
         val exception = shouldThrow<BusinessException> {
-            service.validateRefreshToken(RefreshTokenRequestDTO("refresh-token"), "agent")
+            service.validateRefreshToken(getRefreshTokenRequestDTO(), "user-agent")
         }
         exception.message.shouldBe(TOKEN_INVALID.description)
     }
@@ -97,7 +97,7 @@ class JwtServiceTest: FunSpec({
         every { jwtParserBuilder.verifyWith(any(SecretKey::class)).build().parseSignedClaims(any(String::class)).payload } returns claims
 
         val exception = shouldThrow<BusinessException> {
-            service.validateRefreshToken(RefreshTokenRequestDTO("refresh-token"), "agent")
+            service.validateRefreshToken(getRefreshTokenRequestDTO(), "agent")
         }
         exception.message.shouldBe(TOKEN_INVALID.description)
     }
@@ -127,7 +127,7 @@ class JwtServiceTest: FunSpec({
                 .compact()
         } returns "new-token"
 
-        val result = service.validateRefreshToken(RefreshTokenRequestDTO("refresh-token"), "agent")
+        val result = service.validateRefreshToken(getRefreshTokenRequestDTO(), "agent")
 
         result.token.shouldBe("new-token")
     }

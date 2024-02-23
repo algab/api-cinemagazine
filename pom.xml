@@ -164,7 +164,7 @@
 						<exclude>**/constants/**</exclude>
 						<exclude>**/dto/**</exclude>
 						<exclude>**/documents/**</exclude>
-						<exclude>**/ApiCineMagazineApplication.kt</exclude>
+						<exclude>**/ApiCineMagazineApplication*.*</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
