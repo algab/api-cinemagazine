@@ -24,11 +24,11 @@ class UserControllerIntegrationTest: FunSpec({
         .build()
 
     test("should validate the request fields successfully") {
-        val userRequest = CreateUserRequestDTO(null, "test", "test", "1234", "Masculine")
+        val body = CreateUserRequestDTO(null, "test", "test", "1234", "Masculine")
 
         val request = MockMvcRequestBuilders.post("/v1/users")
             .contentType(APPLICATION_JSON)
-            .content(ObjectMapper().writeValueAsString(userRequest))
+            .content(ObjectMapper().writeValueAsString(body))
 
         mockMvc.perform(request)
             .andExpect(MockMvcResultMatchers.status().isBadRequest)

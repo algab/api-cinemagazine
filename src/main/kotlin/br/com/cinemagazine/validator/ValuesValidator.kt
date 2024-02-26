@@ -8,8 +8,8 @@ class ValuesValidator: ConstraintValidator<Values, String> {
 
     private var values: List<String> = mutableListOf()
 
-    override fun initialize(annotation: Values?) {
-        annotation?.values?.forEach { values.addLast(it) }
+    override fun initialize(annotation: Values) {
+        annotation.values.forEach { values.addLast(it) }
     }
 
     override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean {
