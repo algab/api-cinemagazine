@@ -14,6 +14,7 @@ interface TMDBClient {
     fun trending(
         @PathVariable("time_window") time: String,
         @RequestParam("api_key") apiKey: String,
-        @RequestParam("language") language: String
+        @RequestParam("language") language: String,
+        @RequestParam("page") page: Int
     ): PageTMDB<TrendingTMDB>
 }

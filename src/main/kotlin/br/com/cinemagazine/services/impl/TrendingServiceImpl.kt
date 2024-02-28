@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service
 @Service
 class TrendingServiceImpl(private val proxy: TMDBProxy): TrendingService {
     override fun getTrending(): List<TrendingDTO> {
-        val trending = proxy.getTrending().results
+        val trending = proxy.getTrending()
         return trending.map {
-            TrendingDTO(it.title, it.originalTitle, it.description, it.poster, it.dateRelease, it.media)
+            TrendingDTO(it.id, it.title, it.originalTitle, it.description, it.poster, it.dateRelease, it.media)
         }
     }
 }
