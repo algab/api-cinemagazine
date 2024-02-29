@@ -2,7 +2,7 @@ package br.com.cinemagazine.dto.tmdb
 
 import com.fasterxml.jackson.annotation.JsonAlias
 
-data class TrendingTMDB(
+data class ProductionTMDB(
     val id: Long,
     @JsonAlias("title", "name")
     val title: String,
@@ -11,9 +11,10 @@ data class TrendingTMDB(
     @JsonAlias("overview")
     val description: String,
     @JsonAlias("poster_path")
-    val poster: String,
+    val poster: String?,
     @JsonAlias("release_date", "first_air_date")
     val dateRelease: String,
     @JsonAlias("media_type")
-    val media: String
+    val media: String?,
+    val popularity: Long
 )

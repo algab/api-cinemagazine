@@ -1,6 +1,6 @@
 package br.com.cinemagazine.services
 
-import br.com.cinemagazine.builder.tmdb.getTrendingTMDB
+import br.com.cinemagazine.builder.tmdb.getProductionTMDB
 import br.com.cinemagazine.clients.TMDBProxy
 import br.com.cinemagazine.services.impl.TrendingServiceImpl
 import io.kotest.core.spec.style.FunSpec
@@ -15,7 +15,7 @@ class TrendingServiceTest: FunSpec({
     val service = TrendingServiceImpl(proxy)
 
     test("should return productions trending with successful") {
-        val trending = listOf(getTrendingTMDB())
+        val trending = listOf(getProductionTMDB())
         every { proxy.getTrending() } returns trending
 
         val result = service.getTrending()
@@ -26,6 +26,6 @@ class TrendingServiceTest: FunSpec({
         result[0].description.shouldBe(trending[0].description)
         result[0].dateRelease.shouldBe(trending[0].dateRelease)
         result[0].media.shouldBe(trending[0].media)
-        result[0].poster.contains(hostImages)
+        result[0].poster?.contains(hostImages)
     }
 })

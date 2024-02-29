@@ -1,7 +1,7 @@
 package br.com.cinemagazine.clients
 
 import br.com.cinemagazine.builder.tmdb.getPageTMDB
-import br.com.cinemagazine.builder.tmdb.getTrendingTMDB
+import br.com.cinemagazine.builder.tmdb.getProductionTMDB
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -13,8 +13,8 @@ class TMDBProxyTest: FunSpec({
     val proxy = TMDBProxy(client, "API_KEY", "PT_BR")
 
     test("should return productions trending with successful") {
-        val requestOne = listOf(getTrendingTMDB(), getTrendingTMDB(media = "person"))
-        val requestTwo = listOf(getTrendingTMDB("New Test", "tv"))
+        val requestOne = listOf(getProductionTMDB(), getProductionTMDB(media = "person"))
+        val requestTwo = listOf(getProductionTMDB("New Test", "tv"))
         every { client.trending("day", "API_KEY", "PT_BR", 1) } returns getPageTMDB(list = requestOne)
         every { client.trending("day", "API_KEY", "PT_BR", 2) } returns getPageTMDB(2, requestTwo)
 
