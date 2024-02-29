@@ -9,10 +9,6 @@ spring:
   data:
     mongodb:
       uri: ${MONGO_URI:mongodb://localhost:27017/cinemagazine}
-  cloud:
-    openfeign:
-      httpclient:
-        disable-ssl-validation: true
 
 tmdb:
   language: pt-BR

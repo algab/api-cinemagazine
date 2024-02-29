@@ -16,7 +16,10 @@ class TrendingController(private val trendingService: TrendingService) {
 
     @GetMapping
     fun getTrending(): ResponseEntity<List<TrendingDTO>> {
+        val begin = System.currentTimeMillis()
+        logger.debug("TrendingController.getTrending - Start")
         val trending = trendingService.getTrending()
+        logger.debug("TrendingController.getTrending - End - Time: {} ms", System.currentTimeMillis() - begin)
         return ResponseEntity.ok(trending)
     }
 }

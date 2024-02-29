@@ -1,6 +1,6 @@
 package br.com.cinemagazine.dto.trending
 
-import br.com.cinemagazine.serialize.ImageSerialize
+import br.com.cinemagazine.serializer.ImageSerializer
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
 data class TrendingDTO(
@@ -8,7 +8,7 @@ data class TrendingDTO(
     val title: String,
     val originalTitle: String,
     val description: String,
-    @JsonSerialize(using = ImageSerialize::class)
+    @JsonSerialize(using = ImageSerializer::class)
     val poster: String,
     val dateRelease: String,
     val media: String
