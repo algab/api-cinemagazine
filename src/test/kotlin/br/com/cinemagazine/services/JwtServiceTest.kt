@@ -13,6 +13,7 @@ import io.jsonwebtoken.impl.DefaultClaims
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import java.util.Date
@@ -32,6 +33,8 @@ class JwtServiceTest: FunSpec({
         1L,
         2L
     )
+
+    afterTest { clearAllMocks() }
 
     test("should generate access token with successful") {
         every {

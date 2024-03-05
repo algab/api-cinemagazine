@@ -21,6 +21,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.Called
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -34,6 +35,8 @@ class UserServiceTest: FunSpec({
     val refreshTokenRepository = mockk<RefreshTokenRepository>()
     val passwordEncoder = mockk<PasswordEncoder>()
     val userService = UserServiceImpl(tokenService, userRepository, refreshTokenRepository, passwordEncoder)
+
+    afterTest { clearAllMocks() }
 
     test("should execute login with successful") {
         every { userRepository.findByEmail(any(String::class)) } returns Optional.of(getUserDocument())

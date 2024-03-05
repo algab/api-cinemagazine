@@ -19,6 +19,7 @@ import br.com.cinemagazine.services.TokenService
 import br.com.cinemagazine.services.UserService
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import org.springframework.http.HttpStatus
@@ -28,6 +29,8 @@ class UserControllerUnitTest: FunSpec({
     val userService = mockk<UserService>()
     val tokenService = mockk<TokenService>()
     val userController = UserController(userService, tokenService)
+
+    afterTest { clearAllMocks() }
 
     test("should execute login with successful") {
         every { userService.login(any(LoginRequestDTO::class), any(String::class)) } returns getLoginDTO()

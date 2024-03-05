@@ -13,6 +13,7 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.JwtBuilder
 import io.jsonwebtoken.JwtParserBuilder
 import io.jsonwebtoken.security.Keys.hmacShaKeyFor
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.stereotype.Service
@@ -31,6 +32,8 @@ class JwtServiceImpl(
     @Value("\${jwt.expiration.access-token}") private val expAccessToken: Long,
     @Value("\${jwt.expiration.refresh-token}") private val expRefreshToken: Long
 ): TokenService {
+
+    private val logger = LoggerFactory.getLogger(this.javaClass)
 
     private val accessToken = "access-token"
     private val refreshToken = "refresh-token"
@@ -63,6 +66,7 @@ class JwtServiceImpl(
             }
             return TokenDTO(generateToken(mountUser(claims), accessToken, expAccessToken))
         } catch (exception: Exception) {
+            this.logger.error("JwtServiceImpl.validateRefreshToken - Input: data [{}], agent [{}] - {}", data, agent, TOKEN_INVALID)
             throw BusinessException(UNAUTHORIZED, TOKEN_INVALID)
         }
     }

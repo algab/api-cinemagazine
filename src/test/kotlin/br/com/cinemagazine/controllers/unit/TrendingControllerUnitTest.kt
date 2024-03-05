@@ -5,6 +5,7 @@ import br.com.cinemagazine.controllers.TrendingController
 import br.com.cinemagazine.services.TrendingService
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import org.springframework.http.HttpStatus
@@ -13,6 +14,8 @@ class TrendingControllerUnitTest: FunSpec({
 
     val trendingService = mockk<TrendingService>()
     val trendingController = TrendingController(trendingService)
+
+    afterTest { clearAllMocks() }
 
     test("should return productions trending with successful") {
         val trending = listOf(getProductionDTO())
