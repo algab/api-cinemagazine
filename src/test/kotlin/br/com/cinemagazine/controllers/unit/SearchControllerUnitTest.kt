@@ -1,6 +1,6 @@
 package br.com.cinemagazine.controllers.unit
 
-import br.com.cinemagazine.builder.production.getProductionDTO
+import br.com.cinemagazine.builder.production.getSearchDTO
 import br.com.cinemagazine.controllers.SearchController
 import br.com.cinemagazine.services.SearchService
 import io.kotest.core.spec.style.FunSpec
@@ -18,7 +18,7 @@ class SearchControllerUnitTest: FunSpec({
     afterTest { clearAllMocks() }
 
     test("should successfully return the search for productions") {
-        val search = listOf(getProductionDTO())
+        val search = listOf(getSearchDTO())
         every { searchService.search(any(String::class)) } returns search
 
         val result = searchController.search("test")

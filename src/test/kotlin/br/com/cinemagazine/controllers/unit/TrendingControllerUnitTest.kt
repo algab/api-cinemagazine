@@ -1,6 +1,6 @@
 package br.com.cinemagazine.controllers.unit
 
-import br.com.cinemagazine.builder.production.getProductionDTO
+import br.com.cinemagazine.builder.production.getTrendingDTO
 import br.com.cinemagazine.controllers.TrendingController
 import br.com.cinemagazine.services.TrendingService
 import io.kotest.core.spec.style.FunSpec
@@ -18,7 +18,7 @@ class TrendingControllerUnitTest: FunSpec({
     afterTest { clearAllMocks() }
 
     test("should return productions trending with successful") {
-        val trending = listOf(getProductionDTO())
+        val trending = listOf(getTrendingDTO())
         every { trendingService.getTrending() } returns trending
 
         val result = trendingController.getTrending()

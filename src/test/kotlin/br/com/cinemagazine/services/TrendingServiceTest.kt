@@ -1,7 +1,7 @@
 package br.com.cinemagazine.services
 
 import br.com.cinemagazine.builder.tmdb.getPageTMDB
-import br.com.cinemagazine.builder.tmdb.getProductionTMDB
+import br.com.cinemagazine.builder.tmdb.getTrendingTMDB
 import br.com.cinemagazine.clients.TMDBProxy
 import br.com.cinemagazine.services.impl.TrendingServiceImpl
 import io.kotest.core.spec.style.FunSpec
@@ -20,8 +20,8 @@ class TrendingServiceTest: FunSpec({
     afterTest { clearAllMocks() }
 
     test("should return productions trending with successful") {
-        val responseOne = listOf(getProductionTMDB(), getProductionTMDB(media = "person"))
-        val responseTwo = listOf(getProductionTMDB("New Test", "tv"))
+        val responseOne = listOf(getTrendingTMDB(), getTrendingTMDB(media = "person"))
+        val responseTwo = listOf(getTrendingTMDB("New Test", "tv"))
         every { proxy.trending(1) } returns getPageTMDB(list = responseOne)
         every { proxy.trending(2) } returns getPageTMDB(2, responseTwo)
 

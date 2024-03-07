@@ -1,6 +1,6 @@
 package br.com.cinemagazine.controllers
 
-import br.com.cinemagazine.dto.production.ProductionDTO
+import br.com.cinemagazine.dto.production.TrendingDTO
 import br.com.cinemagazine.services.TrendingService
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -15,7 +15,7 @@ class TrendingController(private val trendingService: TrendingService) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @GetMapping
-    fun getTrending(): ResponseEntity<List<ProductionDTO>> {
+    fun getTrending(): ResponseEntity<List<TrendingDTO>> {
         val begin = System.currentTimeMillis()
         logger.debug("TrendingController.getTrending - Start")
         val trending = trendingService.getTrending()

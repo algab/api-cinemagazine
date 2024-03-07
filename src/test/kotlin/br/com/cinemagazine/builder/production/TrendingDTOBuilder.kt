@@ -1,9 +1,9 @@
 package br.com.cinemagazine.builder.production
 
-import br.com.cinemagazine.dto.production.ProductionDTO
+import br.com.cinemagazine.dto.production.TrendingDTO
 
-fun getProductionDTO(): ProductionDTO {
-    return ProductionDTO(
+fun getTrendingDTO(): TrendingDTO {
+    return TrendingDTO(
         1,
         "Test",
         "Test",

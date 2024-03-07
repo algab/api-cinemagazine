@@ -1,6 +1,6 @@
 package br.com.cinemagazine.controllers
 
-import br.com.cinemagazine.dto.production.ProductionDTO
+import br.com.cinemagazine.dto.production.SearchDTO
 import br.com.cinemagazine.services.SearchService
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -16,7 +16,7 @@ class SearchController(private val searchService: SearchService) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     @GetMapping
-    fun search(@RequestParam("name") name: String): ResponseEntity<List<ProductionDTO>> {
+    fun search(@RequestParam("name") name: String): ResponseEntity<List<SearchDTO>> {
         val begin = System.currentTimeMillis()
         logger.debug("SearchController.search - Start - Input: name [{}]", name)
         val results = searchService.search(name)

@@ -1,20 +1,12 @@
 package br.com.cinemagazine.dto.tmdb
 
-import com.fasterxml.jackson.annotation.JsonAlias
-
-data class ProductionTMDB(
-    val id: Long,
-    @JsonAlias("title", "name")
-    val title: String,
-    @JsonAlias("original_title", "original_name")
-    val originalTitle: String,
-    @JsonAlias("overview")
-    val description: String,
-    @JsonAlias("poster_path")
-    val poster: String?,
-    @JsonAlias("release_date", "first_air_date")
-    val dateRelease: String,
-    @JsonAlias("media_type")
-    val media: String?,
+interface ProductionTMDB {
+    val id: Long
+    val title: String
+    val originalTitle: String
+    val description: String
+    val poster: String?
+    val dateRelease: String
+    val media: String?
     val popularity: Long
-)
+}
