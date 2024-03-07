@@ -1,8 +1,11 @@
 package br.com.cinemagazine.clients
 
+import br.com.cinemagazine.dto.tmdb.CreditTMDB
+import br.com.cinemagazine.dto.tmdb.MovieTMDB
 import br.com.cinemagazine.dto.tmdb.PageTMDB
 import br.com.cinemagazine.dto.tmdb.SearchTMDB
 import br.com.cinemagazine.dto.tmdb.TrendingTMDB
+import br.com.cinemagazine.dto.tmdb.TvTMDB
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
@@ -22,5 +25,17 @@ class TMDBProxy(
 
     fun searchTV(name: String): PageTMDB<SearchTMDB> {
         return client.searchTV(apiKey, language, name)
+    }
+
+    fun getMovie(id: Long): MovieTMDB {
+        return client.getMovie(id, apiKey, language);
+    }
+
+    fun getMovieCredits(id: Long): CreditTMDB {
+        return client.getMovieCredits(id, apiKey, language);
+    }
+
+    fun getTV(id: Long): TvTMDB {
+        return client.getTV(id, apiKey, language);
     }
 }

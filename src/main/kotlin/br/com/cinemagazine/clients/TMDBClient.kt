@@ -1,8 +1,11 @@
 package br.com.cinemagazine.clients
 
+import br.com.cinemagazine.dto.tmdb.CreditTMDB
+import br.com.cinemagazine.dto.tmdb.MovieTMDB
 import br.com.cinemagazine.dto.tmdb.PageTMDB
 import br.com.cinemagazine.dto.tmdb.SearchTMDB
 import br.com.cinemagazine.dto.tmdb.TrendingTMDB
+import br.com.cinemagazine.dto.tmdb.TvTMDB
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.web.bind.annotation.GetMapping
@@ -32,4 +35,25 @@ interface TMDBClient {
         @RequestParam("language") language: String,
         @RequestParam("query") query: String
     ): PageTMDB<SearchTMDB>
+
+    @GetMapping(path = ["/movie/{id}"], consumes = [APPLICATION_JSON_VALUE])
+    fun getMovie(
+        @PathVariable("id") id: Long,
+        @RequestParam("api_key") apiKey: String,
+        @RequestParam("language") language: String
+    ): MovieTMDB
+
+    @GetMapping(path = ["/movie/{id}/credits"], consumes = [APPLICATION_JSON_VALUE])
+    fun getMovieCredits(
+        @PathVariable("id") id: Long,
+        @RequestParam("api_key") apiKey: String,
+        @RequestParam("language") language: String
+    ): CreditTMDB
+
+    @GetMapping(path = ["/tv/{id}"], consumes = [APPLICATION_JSON_VALUE])
+    fun getTV(
+        @PathVariable("id") id: Long,
+        @RequestParam("api_key") apiKey: String,
+        @RequestParam("language") language: String
+    ): TvTMDB
 }
