@@ -14,8 +14,6 @@ data class TvTMDB(
     override val poster: String?,
     @JsonAlias("release_date", "first_air_date")
     override val dateRelease: String,
-    @JsonAlias("media_type")
-    override val media: String?,
     override val popularity: Long,
     @JsonAlias("production_companies")
     val companies: List<CompanyTMDB>,

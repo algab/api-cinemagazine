@@ -1,6 +1,7 @@
 package br.com.cinemagazine.clients
 
-import br.com.cinemagazine.dto.tmdb.CreditTMDB
+import br.com.cinemagazine.dto.tmdb.CreditMovieTMDB
+import br.com.cinemagazine.dto.tmdb.CreditTvTMDB
 import br.com.cinemagazine.dto.tmdb.MovieTMDB
 import br.com.cinemagazine.dto.tmdb.PageTMDB
 import br.com.cinemagazine.dto.tmdb.SearchTMDB
@@ -48,7 +49,7 @@ interface TMDBClient {
         @PathVariable("id") id: Long,
         @RequestParam("api_key") apiKey: String,
         @RequestParam("language") language: String
-    ): CreditTMDB
+    ): CreditMovieTMDB
 
     @GetMapping(path = ["/tv/{id}"], consumes = [APPLICATION_JSON_VALUE])
     fun getTV(
@@ -56,4 +57,11 @@ interface TMDBClient {
         @RequestParam("api_key") apiKey: String,
         @RequestParam("language") language: String
     ): TvTMDB
+
+    @GetMapping(path = ["/tv/{id}/aggregate_credits"], consumes = [APPLICATION_JSON_VALUE])
+    fun getTVCredits(
+        @PathVariable("id") id: Long,
+        @RequestParam("api_key") apiKey: String,
+        @RequestParam("language") language: String
+    ): CreditTvTMDB
 }

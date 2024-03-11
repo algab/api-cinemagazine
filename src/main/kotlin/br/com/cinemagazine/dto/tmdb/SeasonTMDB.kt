@@ -10,5 +10,5 @@ data class SeasonTMDB(
     @JsonAlias("episode_count")
     val totalEpisodes: Int,
     @JsonAlias("air_date")
-    val dateRelease: String
+    val dateRelease: String?
 )

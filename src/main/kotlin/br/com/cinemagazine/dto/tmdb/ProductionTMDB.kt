@@ -7,6 +7,5 @@ interface ProductionTMDB {
     val description: String
     val poster: String?
     val dateRelease: String
-    val media: String?
     val popularity: Long
 }

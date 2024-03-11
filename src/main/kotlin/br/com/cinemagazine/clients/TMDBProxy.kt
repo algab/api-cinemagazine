@@ -1,6 +1,7 @@
 package br.com.cinemagazine.clients
 
-import br.com.cinemagazine.dto.tmdb.CreditTMDB
+import br.com.cinemagazine.dto.tmdb.CreditMovieTMDB
+import br.com.cinemagazine.dto.tmdb.CreditTvTMDB
 import br.com.cinemagazine.dto.tmdb.MovieTMDB
 import br.com.cinemagazine.dto.tmdb.PageTMDB
 import br.com.cinemagazine.dto.tmdb.SearchTMDB
@@ -28,14 +29,18 @@ class TMDBProxy(
     }
 
     fun getMovie(id: Long): MovieTMDB {
-        return client.getMovie(id, apiKey, language);
+        return client.getMovie(id, apiKey, language)
     }
 
-    fun getMovieCredits(id: Long): CreditTMDB {
-        return client.getMovieCredits(id, apiKey, language);
+    fun getMovieCredits(id: Long): CreditMovieTMDB {
+        return client.getMovieCredits(id, apiKey, language)
     }
 
     fun getTV(id: Long): TvTMDB {
-        return client.getTV(id, apiKey, language);
+        return client.getTV(id, apiKey, language)
+    }
+
+    fun getTVCredits(id: Long): CreditTvTMDB {
+        return client.getTVCredits(id, apiKey, language)
     }
 }
