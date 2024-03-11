@@ -1,7 +1,6 @@
 package br.com.cinemagazine.controllers.unit
 
 import br.com.cinemagazine.builder.production.getTrendingDTO
-import br.com.cinemagazine.controllers.TrendingController
 import br.com.cinemagazine.services.TrendingService
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

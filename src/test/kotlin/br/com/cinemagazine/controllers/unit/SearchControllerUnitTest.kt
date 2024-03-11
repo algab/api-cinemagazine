@@ -1,7 +1,6 @@
 package br.com.cinemagazine.controllers.unit
 
 import br.com.cinemagazine.builder.production.getSearchDTO
-import br.com.cinemagazine.controllers.SearchController
 import br.com.cinemagazine.services.SearchService
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
