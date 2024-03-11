@@ -2,6 +2,7 @@ package br.com.cinemagazine.services.impl
 
 import br.com.cinemagazine.clients.TMDBProxy
 import br.com.cinemagazine.constants.Media
+import br.com.cinemagazine.documents.ProductionDocument
 import br.com.cinemagazine.dto.production.CastMovieDTO
 import br.com.cinemagazine.dto.production.CastTvDTO
 import br.com.cinemagazine.dto.production.CrewMovieDTO
@@ -9,12 +10,15 @@ import br.com.cinemagazine.dto.production.CrewTvDTO
 import br.com.cinemagazine.dto.production.MovieDTO
 import br.com.cinemagazine.dto.production.ProductionDTO
 import br.com.cinemagazine.dto.production.TvDTO
+import br.com.cinemagazine.repository.ProductionRepository
 import br.com.cinemagazine.services.ProductionService
+import org.bson.types.ObjectId
 import org.springframework.stereotype.Service
 
 @Service
 class ProductionServiceImpl(
-    private val proxy: TMDBProxy
+    private val proxy: TMDBProxy,
+    private val repository: ProductionRepository
 ): ProductionService {
 
     val jobDirector = "Director"
@@ -23,10 +27,18 @@ class ProductionServiceImpl(
     val jobExecutiveProducer = "Executive Producer"
 
     override fun getProduction(id: Long, media: Media): ProductionDTO {
-        if (media == Media.MOVIE) {
-            return getMovie(id)
+        val document = getDocument(id, media)
+        if (document == null) {
+            if (media == Media.MOVIE) {
+                return getMovie(id)
+            }
+            return getTV(id)
         }
-        return getTV(id)
+        return document.production
+    }
+
+    private fun getDocument(id: Long, media: Media): ProductionDocument? {
+        return this.repository.findByTmdbAndMedia(id, media)
     }
 
     private fun getMovie(id: Long): MovieDTO {
@@ -36,7 +48,7 @@ class ProductionServiceImpl(
         val crew = credits.crew.filter {
             it.job == jobDirector || it.job == jobWriter || it.job == jobProducer || it.job == jobExecutiveProducer
         }.map { CrewMovieDTO(it.name, it.job, it.image) }
-        return MovieDTO(
+        val result = MovieDTO(
             movie.id,
             movie.title,
             movie.originalTitle,
@@ -47,18 +59,20 @@ class ProductionServiceImpl(
             cast,
             crew
         )
+        saveProduction(result, Media.MOVIE)
+        return result
     }
 
     private fun getTV(id: Long): TvDTO {
         val tv = proxy.getTV(id)
         val credits = proxy.getTVCredits(id)
-        val cast = credits.cast.map { CastTvDTO(it.name, it.roles.map { role -> role.character }, it.image) }
+        val cast = credits.cast.slice(IntRange(0, 20)).map { CastTvDTO(it.name, it.roles.map { role -> role.character }, it.image) }
         val crew = credits.crew.filter {
             it.jobs.any { data ->
-                data.job == jobDirector || data.job == jobWriter || data.job == jobProducer || data.job == jobExecutiveProducer
+                data.job == jobWriter || data.job == jobProducer || data.job == jobExecutiveProducer
             }
         }.map { CrewTvDTO(it.name, it.jobs.map { data -> data.job }, it.image) }
-        return TvDTO(
+        val result = TvDTO(
             tv.id,
             tv.title,
             tv.originalTitle,
@@ -70,5 +84,11 @@ class ProductionServiceImpl(
             cast,
             crew
         )
+        saveProduction(result, Media.TV)
+        return result
+    }
+
+    private fun saveProduction(production: ProductionDTO, media: Media) {
+        this.repository.save(ProductionDocument(ObjectId().toString(), production.id, media, production))
     }
 }
