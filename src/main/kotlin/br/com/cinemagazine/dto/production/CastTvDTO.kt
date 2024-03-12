@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 @JsonInclude(NON_NULL)
 data class CastTvDTO(
     val name: String,
-    val character: List<String>,
+    val roles: List<RoleTvDTO>,
     @JsonSerialize(using = ImageSerializer::class)
     val image: String?
 )

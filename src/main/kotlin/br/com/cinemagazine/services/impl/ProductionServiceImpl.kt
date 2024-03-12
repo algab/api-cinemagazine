@@ -9,6 +9,7 @@ import br.com.cinemagazine.dto.production.CrewMovieDTO
 import br.com.cinemagazine.dto.production.CrewTvDTO
 import br.com.cinemagazine.dto.production.MovieDTO
 import br.com.cinemagazine.dto.production.ProductionDTO
+import br.com.cinemagazine.dto.production.RoleTvDTO
 import br.com.cinemagazine.dto.production.TvDTO
 import br.com.cinemagazine.repository.ProductionRepository
 import br.com.cinemagazine.services.ProductionService
@@ -66,7 +67,10 @@ class ProductionServiceImpl(
     private fun getTV(id: Long): TvDTO {
         val tv = proxy.getTV(id)
         val credits = proxy.getTVCredits(id)
-        val cast = credits.cast.slice(IntRange(0, 20)).map { CastTvDTO(it.name, it.roles.map { role -> role.character }, it.image) }
+        val finalIndex = if (credits.cast.size >= 20) 20 else credits.cast.size
+        val cast = credits.cast.slice(IntRange(0, finalIndex - 1)).map {
+            CastTvDTO(it.name, it.roles.map { role -> RoleTvDTO(role.character, role.totalEpisodes) }, it.image)
+        }
         val crew = credits.crew.filter {
             it.jobs.any { data ->
                 data.job == jobWriter || data.job == jobProducer || data.job == jobExecutiveProducer

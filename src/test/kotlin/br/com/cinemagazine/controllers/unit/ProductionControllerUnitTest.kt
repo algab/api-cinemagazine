@@ -1,7 +1,9 @@
 package br.com.cinemagazine.controllers.unit
 
+import br.com.cinemagazine.builder.production.getMovieDTO
 import br.com.cinemagazine.builder.production.getSearchDTO
 import br.com.cinemagazine.builder.production.getTrendingDTO
+import br.com.cinemagazine.constants.Media
 import br.com.cinemagazine.controllers.ProductionController
 import br.com.cinemagazine.services.ProductionService
 import br.com.cinemagazine.services.SearchService
@@ -40,5 +42,15 @@ class ProductionControllerUnitTest: FunSpec({
 
         result.statusCode.shouldBe(HttpStatus.OK)
         result.body.shouldBe(search)
+    }
+
+    test("should return production information successfully") {
+        val production = getMovieDTO()
+        every { productionService.getProduction(any(Long::class), any(Media::class)) } returns production
+
+        val result = productionController.getProduction(1, Media.MOVIE)
+
+        result.statusCode.shouldBe(HttpStatus.OK)
+        result.body.shouldBe(production)
     }
 })
