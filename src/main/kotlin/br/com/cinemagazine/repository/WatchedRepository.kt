@@ -1,0 +1,10 @@
+package br.com.cinemagazine.repository
+
+import br.com.cinemagazine.documents.WatchedDocument
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.mongodb.repository.MongoRepository
+
+interface WatchedRepository: MongoRepository<WatchedDocument, String> {
+    fun findByUserId(userId: String, page: Pageable): Page<WatchedDocument>
+}
