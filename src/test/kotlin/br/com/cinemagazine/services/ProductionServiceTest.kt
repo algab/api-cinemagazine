@@ -42,7 +42,7 @@ class ProductionServiceTest: FunSpec({
         result.shouldBeInstanceOf<MovieDTO>()
     }
 
-    test("should production of type movie") {
+    test("should return production of type movie") {
         val crew = listOf(
             getCrewMovieTMDB(),
             getCrewMovieTMDB("Writer"),
@@ -62,7 +62,7 @@ class ProductionServiceTest: FunSpec({
         verify(exactly = 1) { repository.save(any(ProductionDocument::class)) }
     }
 
-    test("should production of type tv") {
+    test("should return production of type tv") {
         val crew = listOf(
             getCrewTvTMDB(),
             getCrewTvTMDB(listOf(getJobTvTMDB("Producer"))),
@@ -81,7 +81,7 @@ class ProductionServiceTest: FunSpec({
         verify(exactly = 1) { repository.save(any(ProductionDocument::class)) }
     }
 
-    test("should production of type tv with many cast") {
+    test("should return production of type tv with large cast") {
         every { repository.findByTmdbAndMedia(any(Long::class), any(Media::class)) } returns null
         every { proxy.getTV(any(Long::class)) } returns getTvTMDB()
         every { proxy.getTVCredits(any(Long::class)) } returns getCreditTvTMDB(sizeCast = 25)

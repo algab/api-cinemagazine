@@ -26,6 +26,7 @@ class ProductionServiceImpl(
     val jobWriter = "Writer"
     val jobProducer = "Producer"
     val jobExecutiveProducer = "Executive Producer"
+    val numberOfCast = 20
 
     override fun getProduction(id: Long, media: Media): ProductionDTO {
         val document = getDocument(id, media)
@@ -67,7 +68,7 @@ class ProductionServiceImpl(
     private fun getTV(id: Long): TvDTO {
         val tv = proxy.getTV(id)
         val credits = proxy.getTVCredits(id)
-        val finalIndex = if (credits.cast.size >= 20) 20 else credits.cast.size
+        val finalIndex = if (credits.cast.size >= numberOfCast) numberOfCast else credits.cast.size
         val cast = credits.cast.slice(IntRange(0, finalIndex - 1)).map {
             CastTvDTO(it.name, it.roles.map { role -> RoleTvDTO(role.character, role.totalEpisodes) }, it.image)
         }
