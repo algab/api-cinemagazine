@@ -28,8 +28,8 @@ class WatchServiceImpl(
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     override fun addWatchProduction(data: WatchRequestDTO): WatchDTO {
-        val media = Media.valueOf(data.media)
-        val production = this.productionRepository.findByTmdbAndMedia(data.tmdbId, media)
+        val media = Media.getMedia(data.media!!)
+        val production = this.productionRepository.findByTmdbAndMedia(data.tmdbId!!, media!!)
         val watchProduction = WatchProductionDTO(
             production!!.production.id,
             production.production.title,
@@ -40,7 +40,7 @@ class WatchServiceImpl(
             ObjectId().toString(),
             data.tmdbId,
             media,
-            data.userId,
+            data.userId!!,
             watchProduction,
             LocalDateTime.now()
         ))
