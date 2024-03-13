@@ -105,9 +105,7 @@ class UserController(
         val begin = System.currentTimeMillis()
         logger.info("UserController.updateUser - Start - Input: id [{}]", id)
         userService.deleteUser(id)
-        logger.info("UserController.updateUser - End - Input: id [{}] - Time: {} ms",
-            id, System.currentTimeMillis() - begin)
+        logger.info("UserController.updateUser - End - Input: id [{}] - Time: {} ms", id, System.currentTimeMillis() - begin)
         return ResponseEntity.noContent().build()
     }
-
 }

@@ -13,25 +13,20 @@ class ImageSerializerTest: FunSpec({
 
     val jsonGenerator = spyk<JsonGenerator>()
     val serializerProvider = spyk<SerializerProvider>()
-    val serializer = ImageSerializer(hostImage)
 
     afterTest { clearAllMocks() }
 
     test("should serialize with successful") {
+        val serializer = ImageSerializer(hostImage)
         serializer.serialize("/test.png", jsonGenerator, serializerProvider)
 
         verify(exactly = 1) { jsonGenerator.writeString("${hostImage}/test.png") }
     }
 
-    test("should not serialize when the field is null") {
-        serializer.serialize(null, jsonGenerator, serializerProvider)
+    test("should serialize when the attribute host is empty") {
+        val serializer = ImageSerializer()
+        serializer.serialize("/test.png", jsonGenerator, serializerProvider)
 
-        verify(exactly = 1) { jsonGenerator.writeString("") }
-    }
-
-    test("should not serialize when the field is empty") {
-        serializer.serialize("", jsonGenerator, serializerProvider)
-
-        verify(exactly = 1) { jsonGenerator.writeString("") }
+        verify(exactly = 1) { jsonGenerator.writeString("/test.png") }
     }
 })
