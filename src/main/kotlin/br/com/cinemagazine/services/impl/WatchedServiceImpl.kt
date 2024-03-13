@@ -14,7 +14,6 @@ import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Service
@@ -52,9 +51,10 @@ class WatchedServiceImpl(
     }
 
     override fun getWatchedProductions(userId: String, pageable: Pageable): Page<WatchedDTO> {
-        val documents = this.watchedRepository.findByUserId(userId, pageable)
-        val result = documents.content.map { WatchedDTO(it.id, it.date, it.production) }
-        return PageImpl(result)
+        val documents = this.watchedRepository.findByUserId(userId, pageable).content.map {
+            WatchedDTO(it.id, it.date, it.production)
+        }
+        return PageImpl(documents)
     }
 
     override fun deleteWatchedProduction(id: String) {
