@@ -1,10 +1,9 @@
-package br.com.cinemagazine.controllers.unit
+package br.com.cinemagazine.controllers
 
 import br.com.cinemagazine.builder.production.getMovieDTO
 import br.com.cinemagazine.builder.production.getSearchDTO
 import br.com.cinemagazine.builder.production.getTrendingDTO
 import br.com.cinemagazine.constants.Media
-import br.com.cinemagazine.controllers.ProductionController
 import br.com.cinemagazine.services.ProductionService
 import br.com.cinemagazine.services.SearchService
 import br.com.cinemagazine.services.TrendingService
@@ -15,7 +14,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.springframework.http.HttpStatus
 
-class ProductionControllerUnitTest: FunSpec({
+class ProductionControllerTest: FunSpec({
 
     val trendingService = mockk<TrendingService>()
     val searchService = mockk<SearchService>()

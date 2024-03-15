@@ -1,4 +1,4 @@
-package br.com.cinemagazine.controllers.unit
+package br.com.cinemagazine.controllers
 
 import br.com.cinemagazine.builder.token.getRefreshTokenRequestDTO
 import br.com.cinemagazine.builder.token.getTokenDTO
@@ -9,7 +9,6 @@ import br.com.cinemagazine.builder.user.getUpdatePasswordRequestDTO
 import br.com.cinemagazine.builder.user.getUpdateUserRequestDTO
 import br.com.cinemagazine.builder.user.getUserDTO
 import br.com.cinemagazine.constants.Gender
-import br.com.cinemagazine.controllers.UserController
 import br.com.cinemagazine.dto.token.RefreshTokenRequestDTO
 import br.com.cinemagazine.dto.user.CreateUserRequestDTO
 import br.com.cinemagazine.dto.user.LoginRequestDTO
@@ -24,7 +23,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.springframework.http.HttpStatus
 
-class UserControllerUnitTest: FunSpec({
+class UserControllerTest: FunSpec({
 
     val userService = mockk<UserService>()
     val tokenService = mockk<TokenService>()

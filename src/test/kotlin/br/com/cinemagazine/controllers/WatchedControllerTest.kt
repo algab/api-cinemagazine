@@ -1,8 +1,7 @@
-package br.com.cinemagazine.controllers.unit
+package br.com.cinemagazine.controllers
 
 import br.com.cinemagazine.builder.watched.getWatchedDTO
 import br.com.cinemagazine.builder.watched.getWatchedRequestDTO
-import br.com.cinemagazine.controllers.WatchedController
 import br.com.cinemagazine.dto.watched.WatchedRequestDTO
 import br.com.cinemagazine.services.WatchedService
 import io.kotest.core.spec.style.FunSpec
@@ -15,7 +14,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 
-class WatchedControllerUnitTest: FunSpec({
+class WatchedControllerTest: FunSpec({
 
     val watchedService = mockk<WatchedService>()
     val watchedController = WatchedController(watchedService)
