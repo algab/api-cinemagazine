@@ -6,5 +6,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.repository.MongoRepository
 
 interface WatchRepository: MongoRepository<WatchDocument, String> {
+    fun countByUserId(userId: String): Long
     fun findByUserId(userId: String, page: Pageable): Page<WatchDocument>
 }

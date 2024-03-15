@@ -50,11 +50,12 @@ class WatchedServiceImpl(
         return WatchedDTO(document.id, document.date, document.production)
     }
 
-    override fun getWatchedProductions(userId: String, pageable: Pageable): Page<WatchedDTO> {
-        val documents = this.watchedRepository.findByUserId(userId, pageable).content.map {
+    override fun getWatchedProductions(userId: String, page: Pageable): Page<WatchedDTO> {
+        val totalDocuments = this.watchedRepository.countByUserId(userId)
+        val documents = this.watchedRepository.findByUserId(userId, page).content.map {
             WatchedDTO(it.id, it.date, it.production)
         }
-        return PageImpl(documents)
+        return PageImpl(documents, page, totalDocuments)
     }
 
     override fun deleteWatchedProduction(id: String) {

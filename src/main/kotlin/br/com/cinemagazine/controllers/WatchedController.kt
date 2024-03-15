@@ -40,10 +40,10 @@ class WatchedController(private val service: WatchedService) {
         @PageableDefault page: Pageable
     ): ResponseEntity<Page<WatchedDTO>> {
         val begin = System.currentTimeMillis()
-        logger.info("WatchedController.getWatchedProductions - Start - Input: userId [{}]", userId)
+        logger.debug("WatchedController.getWatchedProductions - Start - Input: userId [{}]", userId)
         val result = service.getWatchedProductions(userId, page)
-        logger.info("WatchedController.getWatchedProductions - End - Input: userId [{}] - Output: [{}] - Time: {} ms",
-            userId, result, System.currentTimeMillis() - begin)
+        logger.debug("WatchedController.getWatchedProductions - End - Input: userId [{}] - Output: [{}] - Time: {} ms",
+            userId, result.content, System.currentTimeMillis() - begin)
         return ResponseEntity.ok(result)
     }
 

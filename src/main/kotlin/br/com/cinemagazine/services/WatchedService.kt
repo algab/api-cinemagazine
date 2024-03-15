@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable
 
 interface WatchedService {
     fun addWatchedProduction(data: WatchedRequestDTO): WatchedDTO
-    fun getWatchedProductions(userId: String, pageable: Pageable): Page<WatchedDTO>
+    fun getWatchedProductions(userId: String, page: Pageable): Page<WatchedDTO>
     fun deleteWatchedProduction(id: String)
 }

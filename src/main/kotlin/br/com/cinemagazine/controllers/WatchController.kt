@@ -43,7 +43,7 @@ class WatchController(private val service: WatchService) {
         logger.debug("WatchController.getWatchProductions - Start - Input: userId [{}]", userId)
         val result = service.getWatchProductions(userId, page)
         logger.debug("WatchController.getWatchProductions - End - Input: userId [{}] - Output: [{}] - Time: {} ms",
-            userId, result, System.currentTimeMillis() - begin)
+            userId, result.content, System.currentTimeMillis() - begin)
         return ResponseEntity.ok(result)
     }
 
