@@ -40,7 +40,7 @@ class ProductionServiceImpl(
     }
 
     private fun getDocument(id: Long, media: Media): ProductionDocument? {
-        return this.repository.findByTmdbAndMedia(id, media)
+        return this.repository.findByTmdbIdAndMedia(id, media)
     }
 
     private fun getMovie(id: Long): MovieDTO {

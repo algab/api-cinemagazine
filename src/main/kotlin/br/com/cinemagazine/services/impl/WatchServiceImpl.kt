@@ -29,7 +29,7 @@ class WatchServiceImpl(
 
     override fun addWatchProduction(data: WatchRequestDTO): WatchDTO {
         val media = Media.getMedia(data.media!!)
-        val production = this.productionRepository.findByTmdbAndMedia(data.tmdbId!!, media!!)
+        val production = this.productionRepository.findByTmdbIdAndMedia(data.tmdbId!!, media!!)
         val watchProduction = WatchProductionDTO(
             production!!.production.id,
             production.production.title,

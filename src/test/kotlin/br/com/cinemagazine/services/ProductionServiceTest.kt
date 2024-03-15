@@ -33,11 +33,11 @@ class ProductionServiceTest: FunSpec({
 
     test("should return production from database") {
         val document = getProductionDocument()
-        every { repository.findByTmdbAndMedia(any(Long::class), any(Media::class)) } returns getProductionDocument()
+        every { repository.findByTmdbIdAndMedia(any(Long::class), any(Media::class)) } returns getProductionDocument()
 
         val result = service.getProduction(1, Media.MOVIE)
 
-        result.id.shouldBe(document.tmdb)
+        result.id.shouldBe(document.tmdbId)
         result.title.shouldBe(document.production.title)
         result.shouldBeInstanceOf<MovieDTO>()
     }
@@ -50,7 +50,7 @@ class ProductionServiceTest: FunSpec({
             getCrewMovieTMDB("Executive Producer"),
             getCrewMovieTMDB("Coach")
         )
-        every { repository.findByTmdbAndMedia(any(Long::class), any(Media::class)) } returns null
+        every { repository.findByTmdbIdAndMedia(any(Long::class), any(Media::class)) } returns null
         every { proxy.getMovie(any(Long::class)) } returns getMovieTMDB()
         every { proxy.getMovieCredits(any(Long::class)) } returns getCreditMovieTMDB(crew)
         every { repository.save(any(ProductionDocument::class)) } returns getProductionDocument()
@@ -69,7 +69,7 @@ class ProductionServiceTest: FunSpec({
             getCrewTvTMDB(listOf(getJobTvTMDB("Executive Producer"))),
             getCrewTvTMDB(listOf(getJobTvTMDB("Director")))
         )
-        every { repository.findByTmdbAndMedia(any(Long::class), any(Media::class)) } returns null
+        every { repository.findByTmdbIdAndMedia(any(Long::class), any(Media::class)) } returns null
         every { proxy.getTV(any(Long::class)) } returns getTvTMDB()
         every { proxy.getTVCredits(any(Long::class)) } returns getCreditTvTMDB(crew)
         every { repository.save(any(ProductionDocument::class)) } returns getProductionDocument()
@@ -82,7 +82,7 @@ class ProductionServiceTest: FunSpec({
     }
 
     test("should return production of type tv with large cast") {
-        every { repository.findByTmdbAndMedia(any(Long::class), any(Media::class)) } returns null
+        every { repository.findByTmdbIdAndMedia(any(Long::class), any(Media::class)) } returns null
         every { proxy.getTV(any(Long::class)) } returns getTvTMDB()
         every { proxy.getTVCredits(any(Long::class)) } returns getCreditTvTMDB(sizeCast = 25)
         every { repository.save(any(ProductionDocument::class)) } returns getProductionDocument()

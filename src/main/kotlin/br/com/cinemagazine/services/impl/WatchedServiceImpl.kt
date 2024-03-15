@@ -30,7 +30,7 @@ class WatchedServiceImpl(
 
     override fun addWatchedProduction(data: WatchedRequestDTO): WatchedDTO {
         val media = Media.getMedia(data.media!!)
-        val production = this.productionRepository.findByTmdbAndMedia(data.tmdbId!!, media!!)
+        val production = this.productionRepository.findByTmdbIdAndMedia(data.tmdbId!!, media!!)
         val watchedProduction = WatchedProductionDTO(
             production!!.production.id,
             production.production.title,

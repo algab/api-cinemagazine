@@ -5,5 +5,5 @@ import br.com.cinemagazine.documents.ProductionDocument
 import org.springframework.data.mongodb.repository.MongoRepository
 
 interface ProductionRepository: MongoRepository<ProductionDocument, String> {
-    fun findByTmdbAndMedia(tmdb: Long, media: Media): ProductionDocument?
+    fun findByTmdbIdAndMedia(tmdb: Long, media: Media): ProductionDocument?
 }
