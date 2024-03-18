@@ -1,7 +1,7 @@
 package br.com.cinemagazine.constants
 
-enum class Media(private val value: String) {
-    MOVIE("Movie"), TV("TV");
+enum class Media(val value: String) {
+    MOVIE("movie"), TV("tv");
 
     companion object {
         fun getMedia(value: String): Media? {
