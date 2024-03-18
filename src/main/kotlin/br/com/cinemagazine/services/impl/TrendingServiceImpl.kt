@@ -1,10 +1,10 @@
 package br.com.cinemagazine.services.impl
 
 import br.com.cinemagazine.clients.TMDBProxy
+import br.com.cinemagazine.constants.Media
 import br.com.cinemagazine.dto.production.TrendingDTO
 import br.com.cinemagazine.dto.tmdb.TrendingTMDB
 import br.com.cinemagazine.services.TrendingService
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
@@ -21,7 +21,7 @@ class TrendingServiceImpl(private val proxy: TMDBProxy): TrendingService {
         trending.addAll(deferredTrending[0].results)
         trending.addAll(deferredTrending[1].results)
         trending
-            .filter { it.media == "movie" || it.media == "tv" }
+            .filter { it.media == Media.MOVIE.value || it.media == Media.TV.value }
             .map {
                 TrendingDTO(it.id, it.title, it.originalTitle, it.description, it.poster, it.dateRelease, it.media)
             }

@@ -6,7 +6,7 @@ enum class Media(val value: String) {
     companion object {
         fun getMedia(value: String): Media? {
             for (media in Media.entries) {
-                if (media.value.uppercase() == value.uppercase()) {
+                if (media.name.uppercase() == value.uppercase()) {
                     return media
                 }
             }
