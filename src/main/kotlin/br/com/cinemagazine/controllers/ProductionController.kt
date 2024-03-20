@@ -1,5 +1,6 @@
 package br.com.cinemagazine.controllers
 
+import br.com.cinemagazine.annotation.authorization.Authorize
 import br.com.cinemagazine.constants.Media
 import br.com.cinemagazine.dto.production.ProductionDTO
 import br.com.cinemagazine.dto.production.SearchDTO
@@ -25,6 +26,7 @@ class ProductionController(
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
+    @Authorize
     @GetMapping("/trending")
     fun getTrending(): ResponseEntity<List<TrendingDTO>> {
         val begin = System.currentTimeMillis()
@@ -34,6 +36,7 @@ class ProductionController(
         return ResponseEntity.ok(trending)
     }
 
+    @Authorize
     @GetMapping("/search")
     fun search(@RequestParam("name") name: String): ResponseEntity<List<SearchDTO>> {
         val begin = System.currentTimeMillis()
@@ -43,6 +46,7 @@ class ProductionController(
         return ResponseEntity.ok(results)
     }
 
+    @Authorize
     @GetMapping("/{id}")
     fun getProduction(@PathVariable id: Long, @RequestParam media: Media): ResponseEntity<ProductionDTO> {
         val begin = System.currentTimeMillis()

@@ -29,6 +29,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	implementation group: 'org.springframework', name: 'spring-aop', version: '6.1.5'
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
 	implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.8.0'
@@ -67,7 +68,6 @@ koverReport {
 		excludes {
 			packages("br.com.cinemagazine.constants", "br.com.cinemagazine.dto", "br.com.cinemagazine.documents")
 			classes("br.com.cinemagazine.ApiCineMagazineApplication", "br.com.cinemagazine.ApiCineMagazineApplicationKt")
-			annotatedBy("*InlineOnly*")
 		}
 	}
 }

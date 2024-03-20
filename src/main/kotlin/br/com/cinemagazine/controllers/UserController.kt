@@ -1,5 +1,6 @@
 package br.com.cinemagazine.controllers
 
+import br.com.cinemagazine.annotation.authorization.AuthorizeUser
 import br.com.cinemagazine.dto.token.RefreshTokenRequestDTO
 import br.com.cinemagazine.dto.token.TokenDTO
 import br.com.cinemagazine.dto.user.CreateUserRequestDTO
@@ -70,6 +71,7 @@ class UserController(
         return ResponseEntity.status(CREATED).body(user)
     }
 
+    @AuthorizeUser
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: String): ResponseEntity<UserDTO> {
         val begin = System.currentTimeMillis()
@@ -80,6 +82,7 @@ class UserController(
         return ResponseEntity.ok(user)
     }
 
+    @AuthorizeUser
     @PutMapping("/{id}")
     fun updateUser(@PathVariable id: String, @Valid @RequestBody body: UpdateUserRequestDTO): ResponseEntity<UserDTO> {
         val begin = System.currentTimeMillis()
@@ -90,6 +93,7 @@ class UserController(
         return ResponseEntity.ok(user)
     }
 
+    @AuthorizeUser
     @PutMapping("/{id}/password")
     fun updatePassword(@PathVariable id: String, @Valid @RequestBody body: UpdatePasswordRequestDTO): ResponseEntity<UserDTO> {
         val begin = System.currentTimeMillis()
@@ -100,6 +104,7 @@ class UserController(
         return ResponseEntity.ok(user)
     }
 
+    @AuthorizeUser
     @DeleteMapping("/{id}")
     fun deleteUser(@PathVariable id: String): ResponseEntity<Unit> {
         val begin = System.currentTimeMillis()

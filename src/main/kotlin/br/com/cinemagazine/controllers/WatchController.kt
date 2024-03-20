@@ -1,5 +1,7 @@
 package br.com.cinemagazine.controllers
 
+import br.com.cinemagazine.annotation.authorization.AuthorizeBody
+import br.com.cinemagazine.annotation.authorization.AuthorizeUser
 import br.com.cinemagazine.dto.watch.WatchDTO
 import br.com.cinemagazine.dto.watch.WatchRequestDTO
 import br.com.cinemagazine.services.WatchService
@@ -24,6 +26,7 @@ class WatchController(private val service: WatchService) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
+    @AuthorizeBody(clazz = WatchRequestDTO::class)
     @PostMapping
     fun addWatchProduction(@Valid @RequestBody body: WatchRequestDTO): ResponseEntity<WatchDTO> {
         val begin = System.currentTimeMillis()
@@ -34,6 +37,7 @@ class WatchController(private val service: WatchService) {
         return ResponseEntity.ok(result)
     }
 
+    @AuthorizeUser
     @GetMapping
     fun getWatchProductions(
         @RequestParam userId: String,
