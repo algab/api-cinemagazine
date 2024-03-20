@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.stereotype.Component
