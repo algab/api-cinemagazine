@@ -15,4 +15,8 @@ data class SearchDTO(
     val media: String,
     @JsonIgnore
     val popularity: Long
-)
+): Comparable<SearchDTO> {
+    override fun compareTo(other: SearchDTO): Int {
+        return (other.popularity - popularity).toInt()
+    }
+}

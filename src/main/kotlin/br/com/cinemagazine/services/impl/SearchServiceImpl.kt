@@ -20,7 +20,7 @@ class SearchServiceImpl(private val proxy: TMDBProxy): SearchService {
         ).toTypedArray())
         resultSearch.addAll(deferredSearch[0].results.map { mountProduction(it, Media.MOVIE.value) })
         resultSearch.addAll(deferredSearch[1].results.map { mountProduction(it, Media.TV.value) })
-        resultSearch.sortedByDescending { it.popularity }
+        resultSearch.sorted()
     }
 
     private fun mountProduction(production: SearchTMDB, type: String): SearchDTO {
