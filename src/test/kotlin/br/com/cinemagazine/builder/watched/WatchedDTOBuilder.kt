@@ -6,6 +6,7 @@ import java.time.LocalDate
 fun getWatchedDTO(): WatchedDTO {
     return WatchedDTO(
         "1",
+        5,
         LocalDate.now(),
         getWatchedProductionDTO()
     )

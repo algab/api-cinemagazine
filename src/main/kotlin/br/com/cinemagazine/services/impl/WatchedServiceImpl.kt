@@ -42,18 +42,19 @@ class WatchedServiceImpl(
             data.tmdbId,
             media,
             data.userId!!,
+            data.rating!!,
             LocalDate.parse(data.date),
             watchedProduction,
             LocalDateTime.now()
         ))
         logger.info("WatchedServiceImpl.addWatchedProduction - Successful Operation - data: [{}]", document)
-        return WatchedDTO(document.id, document.date, document.production)
+        return WatchedDTO(document.id, document.rating, document.date, document.production)
     }
 
     override fun getWatchedProductions(userId: String, page: Pageable): Page<WatchedDTO> {
         val totalDocuments = this.watchedRepository.countByUserId(userId)
         val documents = this.watchedRepository.findByUserId(userId, page).content.map {
-            WatchedDTO(it.id, it.date, it.production)
+            WatchedDTO(it.id, it.rating, it.date, it.production)
         }
         return PageImpl(documents, page, totalDocuments)
     }

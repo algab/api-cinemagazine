@@ -8,6 +8,7 @@ fun getWatchedRequestDTO(): WatchedRequestDTO {
         1,
         "tv",
         "1010",
+        5,
         LocalDate.now().toString()
     )
 }
