@@ -1,5 +1,7 @@
 package br.com.cinemagazine.services.impl
 
+import br.com.cinemagazine.constants.ApiMessage.PRODUCTION_NOT_FOUND
+import br.com.cinemagazine.constants.ApiMessage.WATCH_EXISTS
 import br.com.cinemagazine.constants.ApiMessage.WATCH_NOT_FOUND
 import br.com.cinemagazine.constants.Media
 import br.com.cinemagazine.documents.WatchDocument
@@ -15,9 +17,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.util.*
 
 @Service
 class WatchServiceImpl(
@@ -30,6 +34,17 @@ class WatchServiceImpl(
     override fun addWatchProduction(data: WatchRequestDTO): WatchDTO {
         val media = Media.getMedia(data.media!!)
         val production = this.productionRepository.findByTmdbIdAndMedia(data.tmdbId!!, media!!)
+        if (Objects.isNull(production)) {
+            logger.error("WatchServiceImpl.addWatchProduction - {} - tmdbId: [{}]",
+                PRODUCTION_NOT_FOUND.description, data.tmdbId)
+            throw BusinessException(NOT_FOUND, PRODUCTION_NOT_FOUND)
+        }
+        val countDocuments = this.watchRepository.countByTmdbIdAndUserId(data.tmdbId, data.userId!!)
+        if (countDocuments > 0) {
+            logger.error("WatchServiceImpl.addWatchProduction - {} - tmdbId: [{}], userId: [{}]",
+                WATCH_EXISTS.description, data.tmdbId, data.userId)
+            throw BusinessException(CONFLICT, WATCH_EXISTS)
+        }
         val watchProduction = WatchProductionDTO(
             production!!.production.id,
             production.production.title,
@@ -40,7 +55,7 @@ class WatchServiceImpl(
             ObjectId().toString(),
             data.tmdbId,
             media,
-            data.userId!!,
+            data.userId,
             watchProduction,
             LocalDateTime.now()
         ))

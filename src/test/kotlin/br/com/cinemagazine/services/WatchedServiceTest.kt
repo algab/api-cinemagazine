@@ -6,6 +6,8 @@ import br.com.cinemagazine.builder.watched.getWatchedDTO
 import br.com.cinemagazine.builder.watched.getWatchedProductionDTO
 import br.com.cinemagazine.builder.watched.getWatchedRequestDTO
 import br.com.cinemagazine.constants.ApiMessage
+import br.com.cinemagazine.constants.ApiMessage.PRODUCTION_NOT_FOUND
+import br.com.cinemagazine.constants.ApiMessage.WATCHED_EXISTS
 import br.com.cinemagazine.constants.Media
 import br.com.cinemagazine.documents.WatchedDocument
 import br.com.cinemagazine.exception.BusinessException
@@ -16,6 +18,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
+import io.mockk.Called
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -35,11 +38,29 @@ class WatchedServiceTest: FunSpec({
 
     test("should add watched production successfully") {
         every { productionRepository.findByTmdbIdAndMedia(any(Long::class), any(Media::class)) } returns getProductionDocument()
+        every { watchedRepository.countByTmdbIdAndUserId(any(Long::class), any(String::class)) } returns 0
         every { watchedRepository.save(any(WatchedDocument::class)) } returns getWatchedDocument()
 
         val result = service.addWatchedProduction(getWatchedRequestDTO())
 
         result.production.shouldBe(getWatchedProductionDTO())
+    }
+
+    test("when not found production should return error") {
+        every { productionRepository.findByTmdbIdAndMedia(any(Long::class), any(Media::class)) } returns null
+
+        val exception = shouldThrow<BusinessException> { service.addWatchedProduction(getWatchedRequestDTO()) }
+        exception.message.shouldBe(PRODUCTION_NOT_FOUND.description)
+        verify { watchedRepository.save(any(WatchedDocument::class)) wasNot Called }
+    }
+
+    test("when already exists register should return error") {
+        every { productionRepository.findByTmdbIdAndMedia(any(Long::class), any(Media::class)) } returns getProductionDocument()
+        every { watchedRepository.countByTmdbIdAndUserId(any(Long::class), any(String::class)) } returns 1
+
+        val exception = shouldThrow<BusinessException> { service.addWatchedProduction(getWatchedRequestDTO()) }
+        exception.message.shouldBe(WATCHED_EXISTS.description)
+        verify { watchedRepository.save(any(WatchedDocument::class)) wasNot Called }
     }
 
     test("should get productions watched successfully") {

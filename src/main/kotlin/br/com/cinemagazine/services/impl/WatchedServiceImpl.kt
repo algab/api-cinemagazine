@@ -1,5 +1,7 @@
 package br.com.cinemagazine.services.impl
 
+import br.com.cinemagazine.constants.ApiMessage.PRODUCTION_NOT_FOUND
+import br.com.cinemagazine.constants.ApiMessage.WATCHED_EXISTS
 import br.com.cinemagazine.constants.ApiMessage.WATCHED_NOT_FOUND
 import br.com.cinemagazine.constants.Media
 import br.com.cinemagazine.documents.WatchedDocument
@@ -15,10 +17,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.Objects
 
 @Service
 class WatchedServiceImpl(
@@ -31,6 +35,17 @@ class WatchedServiceImpl(
     override fun addWatchedProduction(data: WatchedRequestDTO): WatchedDTO {
         val media = Media.getMedia(data.media!!)
         val production = this.productionRepository.findByTmdbIdAndMedia(data.tmdbId!!, media!!)
+        if (Objects.isNull(production)) {
+            logger.error("WatchedServiceImpl.addWatchedProduction - {} - tmdbId: [{}]",
+                PRODUCTION_NOT_FOUND.description, data.tmdbId)
+            throw BusinessException(NOT_FOUND, PRODUCTION_NOT_FOUND)
+        }
+        val countDocuments = this.watchedRepository.countByTmdbIdAndUserId(data.tmdbId, data.userId!!)
+        if (countDocuments > 0) {
+            logger.error("WatchedServiceImpl.addWatchedProduction - {} - tmdbId: [{}], userId: [{}]",
+                WATCHED_EXISTS.description, data.tmdbId, data.userId)
+            throw BusinessException(CONFLICT, WATCHED_EXISTS)
+        }
         val watchedProduction = WatchedProductionDTO(
             production!!.production.id,
             production.production.title,
@@ -41,7 +56,7 @@ class WatchedServiceImpl(
             ObjectId().toString(),
             data.tmdbId,
             media,
-            data.userId!!,
+            data.userId,
             data.rating!!,
             LocalDate.parse(data.date),
             watchedProduction,
