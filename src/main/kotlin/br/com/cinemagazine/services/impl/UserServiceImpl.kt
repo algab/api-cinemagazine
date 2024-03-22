@@ -67,6 +67,7 @@ class UserServiceImpl(
             LocalDateTime.now()
         )
         val userSaved = userRepository.save(user)
+        logger.info("UserServiceImpl.createUser - Successful Operation - id: [{}]", userSaved.id)
         return UserDTO(userSaved.id, user.firstName, user.lastName, user.email, user.gender)
     }
 
@@ -96,6 +97,7 @@ class UserServiceImpl(
             user.createdDate,
             LocalDateTime.now()
         ))
+        logger.info("UserServiceImpl.updateUser - Successful Operation - id: [{}]", id)
         return UserDTO(userUpdated.id, userUpdated.firstName, userUpdated.lastName, userUpdated.email, userUpdated.gender)
     }
 
@@ -116,6 +118,7 @@ class UserServiceImpl(
             LocalDateTime.now()
         )
         userRepository.save(userUpdated)
+        logger.info("UserServiceImpl.updatePassword - Successful Operation - id: [{}]", id)
         return UserDTO(userUpdated.id, userUpdated.firstName, userUpdated.lastName, userUpdated.email, userUpdated.gender)
     }
 
@@ -124,6 +127,7 @@ class UserServiceImpl(
             logger.error("UserServiceImpl.updatePassword - {} - id: [{}]", USER_NOT_FOUND.description, id)
             throw BusinessException(NOT_FOUND, USER_NOT_FOUND)
         }
+        logger.info("UserServiceImpl.deleteUser - Successful Operation - id: [{}]", id)
         userRepository.delete(user)
     }
 

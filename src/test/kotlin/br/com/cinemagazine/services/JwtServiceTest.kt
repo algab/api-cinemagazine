@@ -10,6 +10,7 @@ import br.com.cinemagazine.services.impl.JwtServiceImpl
 import io.jsonwebtoken.JwtBuilder
 import io.jsonwebtoken.JwtParserBuilder
 import io.jsonwebtoken.impl.DefaultClaims
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -76,6 +77,23 @@ class JwtServiceTest: FunSpec({
         result.shouldBe("refresh-token")
     }
 
+    test("when the token type is not equal to access-token should return error") {
+        val claims = DefaultClaims(hashMapOf("type" to "token"))
+        every { jwtParserBuilder.verifyWith(any(SecretKey::class)).build().parseSignedClaims(any(String::class)).payload } returns claims
+
+        val exception = shouldThrow<BusinessException> {
+            service.validateAccessToken("token")
+        }
+        exception.message.shouldBe(TOKEN_INVALID.description)
+    }
+
+    test("should validate access token with successful") {
+        val claims = DefaultClaims(hashMapOf("type" to "access-token"))
+        every { jwtParserBuilder.verifyWith(any(SecretKey::class)).build().parseSignedClaims(any(String::class)).payload } returns claims
+
+        shouldNotThrow<BusinessException> { service.validateAccessToken("token") }
+    }
+
     test("when the token is not saved should return error") {
         every { refreshTokenRepository.findByToken(any(String::class)) } returns Optional.empty()
 
@@ -133,5 +151,24 @@ class JwtServiceTest: FunSpec({
         val result = service.validateRefreshToken(getRefreshTokenRequestDTO(), "agent")
 
         result.token.shouldBe("new-token")
+    }
+
+    test("should get token field successfully") {
+        val claims = DefaultClaims(hashMapOf("jti" to "1"))
+        every { jwtParserBuilder.verifyWith(any(SecretKey::class)).build().parseSignedClaims(any(String::class)).payload } returns claims
+
+        val result = service.getByField("token", "jti")
+
+        result.shouldBe("1")
+    }
+
+    test("should return an error when accessing a non-existent field") {
+        val claims = DefaultClaims(hashMapOf("jit" to "1"))
+        every { jwtParserBuilder.verifyWith(any(SecretKey::class)).build().parseSignedClaims(any(String::class)).payload } returns claims
+
+        val exception = shouldThrow<BusinessException> {
+            service.getByField("token", "id")
+        }
+        exception.message.shouldBe(TOKEN_INVALID.description)
     }
 })

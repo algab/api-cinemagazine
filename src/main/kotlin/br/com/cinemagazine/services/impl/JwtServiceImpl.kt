@@ -1,5 +1,6 @@
 package br.com.cinemagazine.services.impl
 
+import br.com.cinemagazine.constants.ApiMessage.REFRESH_TOKEN_NOT_FOUND
 import br.com.cinemagazine.constants.ApiMessage.TOKEN_INVALID
 import br.com.cinemagazine.constants.Gender
 import br.com.cinemagazine.dto.token.RefreshTokenRequestDTO
@@ -56,10 +57,11 @@ class JwtServiceImpl(
         try {
             val claims = jwtParserBuilder.verifyWith(getSecretKey()).build().parseSignedClaims(token).payload
             if (claims[typeToken].toString() != accessToken) {
+                logger.debug("JwtServiceImpl.validateAccessToken - Type token incorrect")
                 throw TokenException()
             }
         } catch (exception: Exception) {
-            this.logger.error("JwtServiceImpl.validateAccessToken - Input: token [{}] - {}", token, TOKEN_INVALID)
+            logger.error("JwtServiceImpl.validateAccessToken - Input: token [{}] - {}", token, TOKEN_INVALID.description)
             throw BusinessException(UNAUTHORIZED, TOKEN_INVALID)
         }
     }
@@ -67,18 +69,21 @@ class JwtServiceImpl(
     override fun validateRefreshToken(data: RefreshTokenRequestDTO, agent: String): TokenDTO {
         try {
             val document = refreshTokenRepository.findByToken(data.token!!).orElseThrow {
+                logger.debug("JwtServiceImpl.validateRefreshToken - {}", REFRESH_TOKEN_NOT_FOUND.description)
                 throw TokenException()
             }
             if (document.agent != agent) {
+                logger.debug("JwtServiceImpl.validateRefreshToken - User agent is different")
                 throw TokenException()
             }
             val claims = jwtParserBuilder.verifyWith(getSecretKey()).build().parseSignedClaims(data.token).payload
             if (claims[typeToken].toString() != refreshToken) {
+                logger.debug("JwtServiceImpl.validateRefreshToken - Type token incorrect")
                 throw TokenException()
             }
             return TokenDTO(generateToken(mountUser(claims), accessToken, expAccessToken))
         } catch (exception: Exception) {
-            this.logger.error("JwtServiceImpl.validateRefreshToken - Input: data [{}], agent [{}] - {}", data, agent, TOKEN_INVALID)
+            logger.error("JwtServiceImpl.validateRefreshToken - Input: data [{}], agent [{}] - {}", data, agent, TOKEN_INVALID.description)
             throw BusinessException(UNAUTHORIZED, TOKEN_INVALID)
         }
     }
@@ -86,9 +91,14 @@ class JwtServiceImpl(
     override fun getByField(token: String, field: String): String {
         try {
             val claims = jwtParserBuilder.verifyWith(getSecretKey()).build().parseSignedClaims(token).payload
-            return claims[field].toString()
+            val value = claims[field].toString()
+            if (value == "null") {
+                logger.debug("JwtServiceImpl.getByField - Field not found")
+                throw TokenException()
+            }
+            return value
         } catch (exception: Exception) {
-            this.logger.error("JwtServiceImpl.getByField - Input: token [{}] - {}", token, TOKEN_INVALID)
+            logger.error("JwtServiceImpl.getByField - Input: token [{}] - {}", token, TOKEN_INVALID.description)
             throw BusinessException(UNAUTHORIZED, TOKEN_INVALID)
         }
     }

@@ -1,7 +1,9 @@
 package br.com.cinemagazine.controllers
 
+import br.com.cinemagazine.annotation.authorization.Authorize
 import br.com.cinemagazine.annotation.authorization.AuthorizeBody
 import br.com.cinemagazine.annotation.authorization.AuthorizeUser
+import br.com.cinemagazine.annotation.authorization.AuthorizeWatched
 import br.com.cinemagazine.dto.watched.WatchedDTO
 import br.com.cinemagazine.dto.watched.WatchedRequestDTO
 import br.com.cinemagazine.services.WatchedService
@@ -26,6 +28,7 @@ class WatchedController(private val service: WatchedService) {
 
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
+    @Authorize
     @AuthorizeBody(clazz = WatchedRequestDTO::class)
     @PostMapping
     fun addWatchedProduction(@Valid @RequestBody body: WatchedRequestDTO): ResponseEntity<WatchedDTO> {
@@ -37,6 +40,7 @@ class WatchedController(private val service: WatchedService) {
         return ResponseEntity.ok(result)
     }
 
+    @Authorize
     @AuthorizeUser
     @GetMapping
     fun getWatchedProductions(
@@ -51,6 +55,8 @@ class WatchedController(private val service: WatchedService) {
         return ResponseEntity.ok(result)
     }
 
+    @Authorize
+    @AuthorizeWatched
     @DeleteMapping("/{id}")
     fun deleteWatchedProduction(@PathVariable id: String): ResponseEntity<Unit> {
         val begin = System.currentTimeMillis()

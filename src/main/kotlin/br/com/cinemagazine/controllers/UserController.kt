@@ -1,5 +1,6 @@
 package br.com.cinemagazine.controllers
 
+import br.com.cinemagazine.annotation.authorization.Authorize
 import br.com.cinemagazine.annotation.authorization.AuthorizeUser
 import br.com.cinemagazine.dto.token.RefreshTokenRequestDTO
 import br.com.cinemagazine.dto.token.TokenDTO
@@ -71,6 +72,7 @@ class UserController(
         return ResponseEntity.status(CREATED).body(user)
     }
 
+    @Authorize
     @AuthorizeUser
     @GetMapping("/{id}")
     fun getUser(@PathVariable id: String): ResponseEntity<UserDTO> {
@@ -82,6 +84,7 @@ class UserController(
         return ResponseEntity.ok(user)
     }
 
+    @Authorize
     @AuthorizeUser
     @PutMapping("/{id}")
     fun updateUser(@PathVariable id: String, @Valid @RequestBody body: UpdateUserRequestDTO): ResponseEntity<UserDTO> {
@@ -93,6 +96,7 @@ class UserController(
         return ResponseEntity.ok(user)
     }
 
+    @Authorize
     @AuthorizeUser
     @PutMapping("/{id}/password")
     fun updatePassword(@PathVariable id: String, @Valid @RequestBody body: UpdatePasswordRequestDTO): ResponseEntity<UserDTO> {
@@ -104,6 +108,7 @@ class UserController(
         return ResponseEntity.ok(user)
     }
 
+    @Authorize
     @AuthorizeUser
     @DeleteMapping("/{id}")
     fun deleteUser(@PathVariable id: String): ResponseEntity<Unit> {
