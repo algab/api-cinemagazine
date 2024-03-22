@@ -9,6 +9,7 @@ import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
 import org.aspectj.lang.reflect.MethodSignature
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders.AUTHORIZATION
 import org.springframework.http.HttpStatus.UNAUTHORIZED
 import org.springframework.stereotype.Component
@@ -21,7 +22,8 @@ class AuthorizeBodyAspect(
     private val tokenService: TokenService
 ) {
 
-    val fieldJTI = "jti"
+    private val logger = LoggerFactory.getLogger(this.javaClass)
+    private val fieldJTI = "jti"
 
     @Before("@annotation(br.com.cinemagazine.annotation.authorization.AuthorizeBody)")
     fun authorize(joinPoint: JoinPoint) {
@@ -31,6 +33,7 @@ class AuthorizeBodyAspect(
         val body = annotation.clazz.cast(joinPoint.args[0])
         val jti = tokenService.getByField(token, fieldJTI)
         if (body.userId != jti) {
+            logger.error("AuthorizeBodyAspect.authorize - {}", USER_UNAUTHORIZED.description)
             throw BusinessException(UNAUTHORIZED, USER_UNAUTHORIZED)
         }
     }
