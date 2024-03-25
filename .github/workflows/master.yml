@@ -1,0 +1,20 @@
+name: API CineMagazine
+on:
+  push:
+    branches: [master]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '21'
+          cache: 'gradle'
+      - name: Install dependencies
+        run: ./gradlew build
+      - name: Tests units
+        run: ./gradlew koverXmlReport
