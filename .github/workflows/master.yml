@@ -13,8 +13,12 @@ jobs:
         with:
           distribution: 'oracle'
           java-version: '21'
-          cache: 'gradle'
       - name: Install dependencies
         run: ./gradlew build
       - name: Tests units
         run: ./gradlew koverXmlReport
+      - name: Code Coverage
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./build/reports/kover/report.xml
